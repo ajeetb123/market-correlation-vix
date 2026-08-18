@@ -5,6 +5,30 @@ diversification across a basket of stocks - i.e., a spike in how correlated
 they all are with each other — tend to *lead* a spike in the VIX, or are the
 two more or less contemporaneous?
 
+## Background
+
+This project extends earlier published research: [Derek Horstmeyer, Hugh
+Holtman, and Ajeet Bondugula, "What Signals a Coming Market/VIX Blow
+Up?"](https://www.advisorperspectives.com/articles/2025/10/06/what-signals-market-vix-blow-up),
+*Advisor Perspectives*, October 6, 2025.
+
+That study looked at a broad cross-asset universe — equities, commodities,
+and debt — around six historical volatility events where the VIX roughly
+doubled in under three months (1998, 2002, 2008, 2010, 2011, and 2020). For
+each event, it built a correlation matrix for the three months *before* the
+spike and compared it to a correlation matrix from *during* the spike. The
+takeaway across all six events: equity-class correlations tend to run
+unusually high heading into a VIX blowup, gold-vs-equity correlation tends
+to turn unusually negative, and diversification broadly breaks down once the
+event is underway.
+
+That earlier work compared two static snapshots (before vs. during) across
+historical crises. This project turns the same underlying idea into a
+continuous, day-by-day question on a single equity basket: instead of two
+snapshots, it builds an unbroken rolling correlation series and tests
+directly, with statistics rather than a visual before/after comparison,
+whether *rises* in that series measurably *precede* rises in the VIX.
+
 ## Hypothesis
 
 In normal markets, different companies' stock prices move for their own
