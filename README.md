@@ -1,7 +1,7 @@
 # Market Correlation vs. VIX
 
 A Python rebuild of an Excel-based research project: does a breakdown in
-diversification across a basket of stocks — i.e., a spike in how correlated
+diversification across a basket of stocks - i.e., a spike in how correlated
 they all are with each other — tend to *lead* a spike in the VIX, or are the
 two more or less contemporaneous?
 
