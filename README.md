@@ -1,5 +1,11 @@
 # Market Correlation vs. VIX
 
+**Status:** 🚧 work in progress. The core pipeline runs end-to-end and its
+statistical functions are verified (see [Verification](#verification)
+below), but the methodology has known gaps — see [Open items](#open-items)
+— and the basket, thresholds, and event-study design are still being
+refined.
+
 A Python rebuild of an Excel-based research project: does a breakdown in
 diversification across a basket of stocks - i.e., a spike in how correlated
 they all are with each other — tend to *lead* a spike in the VIX, or are the
@@ -95,6 +101,60 @@ python main.py
 
 Charts are written to `output/`.
 
+## Verification
+
+Before trusting any number below, every piece of the pipeline was checked
+against an independent source of truth rather than just read back:
+
+- **`average_pairwise_correlation`** — recomputed with a separate,
+  brute-force implementation (a plain Python loop over each 20-day window,
+  no pandas vectorization) and compared to the pipeline's output across all
+  2,902 overlapping trading days. Max difference: `3.1e-15`, i.e.
+  floating-point noise, not a discrepancy.
+- **`cross_correlation`'s lag sign convention** — tested on synthetic data
+  built so `x` was constructed to lead `y` by a known 5 trading days. The
+  function correctly reported its peak at lag +5.
+- **`granger_causality`'s direction** — tested on a synthetic series where
+  `x` truly drives `y` one day later: the test correctly returned p≈0 for
+  "x causes y" and p>0.05 (not significant) for the reverse "y causes x".
+- **`identify_spike_events`** — tested against a series with six manually
+  planted spikes at known positions; it recovered exactly those six, no
+  more, no fewer.
+- **`event_study`** — tested on synthetic data with a forced, real VIX jump
+  10 days after each planted spike; it correctly detected the effect
+  (p=0.014).
+- **The downloaded data itself** — spot-checked against publicly recorded
+  VIX closes on well-known dates (Aug 24 2015, Feb 5 2018, Mar 16 2020, Aug
+  5 2024, Apr 8 2025); every value matched exactly. The full-period
+  correlation heatmap was also checked against sector logic (e.g. JPM/BAC
+  and XOM/CVX pairs should — and do — show the highest correlation of the
+  basket).
+
+## Open items
+
+Real gaps, not yet addressed:
+
+- [ ] `event_study`'s "baseline" 10-day VIX change is computed over *all*
+  trading days, which technically includes the spike days themselves —
+  it isn't excluded from its own control group. With only 16 events in
+  ~2,900 days the contamination is small, but it should be excluded
+  properly rather than approximately.
+- [ ] `identify_spike_events`'s `min_gap` de-duplication measures spacing
+  in *calendar* days (`(d - kept[-1]).days`) but is meant to represent
+  *trading*-day spacing — close enough most of the time, but not exact
+  across weekends/holidays.
+- [ ] Granger causality and cross-correlation are both run on the *level*
+  of average correlation and VIX rather than their day-to-day changes;
+  both series are highly autocorrelated, which can inflate apparent
+  lead-lag relationships. Re-run on differenced series as a robustness
+  check.
+- [ ] Basket is single-country equities only. The original research this
+  extends also covered commodities, debt, and gold-vs-equity correlation
+  specifically — not yet reproduced here.
+- [ ] Only one rolling window (20 days), one z-score lookback (252 days),
+  and one spike threshold (1.5σ) have been tried. No sensitivity check yet
+  on whether the results hold across nearby parameter choices.
+
 ## Results
 
 *(From the run committed to this repo, 2015-01-01 through the run date.
@@ -129,21 +189,15 @@ JPM/BAC (0.88) and XOM/CVX (0.84) show the highest correlation, as expected:
 
 ![Correlation heatmap](output/heatmap_full_period.png)
 
-### Honest takeaways
+### Honest takeaway
 
-- This basket/period does **not** provide strong evidence that correlation
-  spikes cleanly *lead* VIX spikes. The two look more contemporaneous, with
-  VIX moving marginally first if anything.
-- Both series are highly autocorrelated (persistent from one day to the
-  next), which broadens the cross-correlation function across many lags
-  rather than producing a sharp peak — a well-known pitfall when applying
-  cross-correlation to smooth, persistent time series. Take the exact peak
-  lag as suggestive, not conclusive.
-- 16 spike events over ~10 years is a small sample; the event study is
-  underpowered to detect anything but a large effect.
-- Reasonable next steps: test on VIX *changes* rather than levels, try a
-  wider or different basket (e.g., cross-asset rather than single-country
-  equities), or widen the spike threshold to capture more events.
+This basket/period does **not** provide strong evidence that correlation
+spikes cleanly *lead* VIX spikes — the two look more contemporaneous, with
+VIX moving marginally first if anything, and 16 spike events over ~10 years
+is a small sample to begin with. See [Open items](#open-items) above for
+the specific methodological gaps that could be shifting this result, and
+[Verification](#verification) for what's already been checked and is *not*
+the explanation.
 
 ## Project layout
 
