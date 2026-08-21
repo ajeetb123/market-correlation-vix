@@ -1,14 +1,14 @@
-"""Downloads historical prices for the asset basket and the VIX index via yfinance."""
+#Downloads historical prices for the asset basket and the VIX index via yfinance.
 
 from __future__ import annotations
 
 import pandas as pd
 import yfinance as yf
 
-# Ten large-cap names spread across sectors. The point of the basket is
-# breadth: if names that don't otherwise have much business in common start
-# moving together, that's a signal about market-wide risk appetite rather
-# than anything sector-specific.
+# Ten large-cap stocks from unrelated industries on purpose; don't have similar businesses so shouldn't move together; 
+# movement means market-wide fear 
+# and not a specific change to one sector
+# I am measuring how market wide fear affects the correlation of these unrelated securities
 DEFAULT_BASKET = {
     "AAPL": "Technology",
     "MSFT": "Technology",
@@ -23,6 +23,7 @@ DEFAULT_BASKET = {
 }
 
 VIX_TICKER = "^VIX"
+# ^ means index; not a tradeable stock
 
 
 def download_prices(tickers: list[str], start: str, end: str | None = None) -> pd.DataFrame:
