@@ -57,11 +57,16 @@ and less useful result.
 
 ## Data
 
-- **Basket** — 10 large-cap U.S. stocks spread across 5 sectors, so the
-  basket's average correlation reflects market-wide co-movement rather than
-  one sector's story: `AAPL`/`MSFT` (Technology), `JPM`/`BAC` (Financials),
-  `XOM`/`CVX` (Energy), `JNJ`/`PG` (Healthcare/Staples), `HD`/`CAT`
-  (Discretionary/Industrials).
+- **Basket** — 10 large-cap U.S. stocks, **one per sector, no repeats**:
+  `AAPL` (Technology), `JPM` (Financials), `XOM` (Energy), `JNJ`
+  (Healthcare), `PG` (Consumer Staples), `HD` (Consumer Discretionary),
+  `CAT` (Industrials), `LIN` (Materials), `VZ` (Communication Services),
+  `NEE` (Utilities). Every sector appears exactly once on purpose — an
+  earlier version of this basket had two stocks in each of three sectors,
+  which meant part of the "average correlation" number could just be
+  ordinary sector news (e.g. two tech stocks reacting to the same rate
+  headline) rather than genuine market-wide co-movement. See
+  [`src/data.py`](src/data.py) for the reasoning in full.
 - **VIX** — `^VIX`, the CBOE Volatility Index.
 - **Source** — [yfinance](https://github.com/ranaroussi/yfinance), daily
   split/dividend-adjusted closes, 2015-01-01 to present.
@@ -109,7 +114,7 @@ against an independent source of truth rather than just read back:
 - **`average_pairwise_correlation`** — recomputed with a separate,
   brute-force implementation (a plain Python loop over each 20-day window,
   no pandas vectorization) and compared to the pipeline's output across all
-  2,902 overlapping trading days. Max difference: `3.1e-15`, i.e.
+  2,906 overlapping trading days. Max difference: `8.2e-15`, i.e.
   floating-point noise, not a discrepancy.
 - **`cross_correlation`'s lag sign convention** — tested on synthetic data
   built so `x` was constructed to lead `y` by a known 5 trading days. The
@@ -125,10 +130,11 @@ against an independent source of truth rather than just read back:
   (p=0.014).
 - **The downloaded data itself** — spot-checked against publicly recorded
   VIX closes on well-known dates (Aug 24 2015, Feb 5 2018, Mar 16 2020, Aug
-  5 2024, Apr 8 2025); every value matched exactly. The full-period
-  correlation heatmap was also checked against sector logic (e.g. JPM/BAC
-  and XOM/CVX pairs should — and do — show the highest correlation of the
-  basket).
+  5 2024, Apr 8 2025); every value matched exactly.
+- **The one-per-sector redesign worked as intended** — with no two stocks
+  sharing a sector, the full-period heatmap now has no artificially
+  dominant pair: the highest is JPM/CAT at 0.58, well below the 0.88 a
+  same-sector pair (JPM/BAC) hit in the earlier version of this basket.
 
 ## Open items
 
@@ -165,7 +171,7 @@ together, most clearly during the March 2020 and 2022 stress periods:
 
 ![Average correlation vs VIX](output/avg_corr_vs_vix.png)
 
-**Cross-correlation** peaked at **lag −3** (correlation 0.48), meaning in
+**Cross-correlation** peaked at **lag −4** (correlation 0.56), meaning in
 this sample the VIX moved slightly *ahead of* average correlation rather
 than behind it — the opposite of the hypothesis's direction, though only by
 a few days:
@@ -174,28 +180,33 @@ a few days:
 
 **Granger causality** found no lag at which average correlation
 significantly predicted the VIX beyond the VIX's own history (smallest
-p-value 0.51, far above conventional significance thresholds).
+p-value 0.42, far above conventional significance thresholds).
 
 **Event study**: 16 correlation-spike events were identified over the
-sample. The VIX's mean 10-day forward change after those events (+3.9%) was
-higher than its unconditional 10-day change (+2.3%), in the hypothesized
-direction, but the difference was not statistically significant (t=0.18,
-p=0.86) — unsurprising with only 16 events.
+sample. The VIX's mean 10-day forward change after those events (**−2.4%**)
+was actually *lower* than its unconditional 10-day change (+2.3%) — the
+opposite of the hypothesized direction this time — and, as before, not
+statistically significant (t=−0.72, p=0.48).
 
 ![Event study](output/event_study.png)
 
-**Full-period correlation heatmap**, as a sanity check — sector pairs like
-JPM/BAC (0.88) and XOM/CVX (0.84) show the highest correlation, as expected:
+**Full-period correlation heatmap**, as a sanity check — with no two stocks
+sharing a sector, no single pair dominates; the highest is JPM/CAT at 0.58,
+consistent with genuine cross-sector co-movement rather than one pair of
+similar businesses inflating the picture:
 
 ![Correlation heatmap](output/heatmap_full_period.png)
 
 ### Honest takeaway
 
-This basket/period does **not** provide strong evidence that correlation
-spikes cleanly *lead* VIX spikes — the two look more contemporaneous, with
-VIX moving marginally first if anything, and 16 spike events over ~10 years
-is a small sample to begin with. See [Open items](#open-items) above for
-the specific methodological gaps that could be shifting this result, and
+This basket/period does **not** provide evidence that correlation spikes
+lead VIX spikes — under the original basket the event study leaned
+(insignificantly) in the hypothesized direction, and under this
+one-per-sector basket it flipped to leaning (still insignificantly) the
+*other* way. That instability between two reasonable basket choices is
+itself informative: whatever relationship exists here is not strong or
+robust enough to survive a change in which 10 stocks you pick. See [Open
+items](#open-items) above for the remaining methodological gaps, and
 [Verification](#verification) for what's already been checked and is *not*
 the explanation.
 
