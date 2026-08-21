@@ -5,21 +5,25 @@ from __future__ import annotations
 import pandas as pd
 import yfinance as yf
 
-# Ten large-cap stocks from unrelated industries on purpose; don't have similar businesses so shouldn't move together; 
-# movement means market-wide fear 
+# Ten large-cap stocks, one per sector, no repeats, on purpose; don't have
+# similar businesses so shouldn't move together;
+# movement means market-wide fear
 # and not a specific change to one sector
+# (an earlier version had two stocks in some sectors, which let ordinary
+# sector news drive part of the correlation number instead of real
+# market-wide fear - fixed by making every sector appear exactly once)
 # I am measuring how market wide fear affects the correlation of these unrelated securities
 DEFAULT_BASKET = {
     "AAPL": "Technology",
-    "MSFT": "Technology",
     "JPM": "Financials",
-    "BAC": "Financials",
     "XOM": "Energy",
-    "CVX": "Energy",
     "JNJ": "Healthcare",
     "PG": "Consumer Staples",
     "HD": "Consumer Discretionary",
     "CAT": "Industrials",
+    "LIN": "Materials",
+    "VZ": "Communication Services",
+    "NEE": "Utilities",
 }
 
 VIX_TICKER = "^VIX"
