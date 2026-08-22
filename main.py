@@ -1,5 +1,6 @@
-"""End-to-end pipeline: download data, compute rolling correlations, test
-whether correlation spikes lead VIX spikes, and save charts to output/.
+"""Runs the whole thing start to finish: downloads the data, computes the
+rolling correlations, runs the tests to see if correlation spikes lead VIX
+spikes, and saves all the charts into output/.
 
 Run with:  python main.py
 """
@@ -44,17 +45,19 @@ def main() -> None:
     prices, vix = load_basket_and_vix(START_DATE)
     returns = daily_returns(prices)
     print(f"  {len(prices)} trading days, {prices.shape[1]} tickers: {list(prices.columns)}")
+    print(prices.tail(3))  # just eyeballing that the download actually worked
 
     print("Computing rolling average pairwise correlation...")
-    # avg_corr starts CORR_WINDOW-1 days later than vix, since the rolling
-    # window needs that many days before it produces its first real value -
-    # this re-aligns both series onto exactly the dates they share.
+    # avg_corr starts a bit later than vix because the rolling window needs
+    # CORR_WINDOW days before it can spit out a real first value - this
+    # lines both series back up on the exact dates they both have data for
     avg_corr = average_pairwise_correlation(returns, CORR_WINDOW)
     aligned_vix = vix.reindex(avg_corr.index).dropna()
     avg_corr = avg_corr.reindex(aligned_vix.index)
 
     print("Saving correlation heatmaps...")
-    full_period_matrix = returns.corr()
+    # sanity-check heatmap for the whole period
+    full_period_matrix = prices.corr()
     plot_correlation_heatmap(
         full_period_matrix,
         "Full-period pairwise correlation",
@@ -70,7 +73,7 @@ def main() -> None:
     print("Saving average-correlation-vs-VIX time series...")
     plot_avg_correlation_vs_vix(avg_corr, aligned_vix, f"{OUTPUT_DIR}/avg_corr_vs_vix.png")
 
-    print("Running cross-correlation (lead-lag) analysis...")
+    print("Running cross-correlation (lead-lag) test...")
     xcorr = cross_correlation(avg_corr, aligned_vix, MAX_LAG)
     plot_cross_correlation(xcorr, f"{OUTPUT_DIR}/cross_correlation.png")
     peak_lag = xcorr.idxmax()
@@ -82,7 +85,7 @@ def main() -> None:
     best_lag = min(granger_pvalues, key=granger_pvalues.get)
     print(f"  Smallest p-value {granger_pvalues[best_lag]:.4f} at lag {best_lag}")
 
-    print("Running event study on correlation-spike days...")
+    print("Running the event study on correlation-spike days...")
     z = rolling_zscore(avg_corr, ZSCORE_LOOKBACK)
     events = identify_spike_events(z, SPIKE_THRESHOLD)
     print(f"  {len(events)} correlation-spike events identified (z > {SPIKE_THRESHOLD})")

@@ -1,18 +1,17 @@
-#Downloads historical prices for the asset basket and the VIX index via yfinance.
+#Grabs historical prices for my basket of stocks + the VIX using yfinance.
 
 from __future__ import annotations
 
 import pandas as pd
 import yfinance as yf
 
-# Ten large-cap stocks, one per sector, no repeats, on purpose; don't have
-# similar businesses so shouldn't move together;
-# movement means market-wide fear
-# and not a specific change to one sector
-# (an earlier version had two stocks in some sectors, which let ordinary
-# sector news drive part of the correlation number instead of real
-# market-wide fear - fixed by making every sector appear exactly once)
-# I am measuring how market wide fear affects the correlation of these unrelated securities
+# 10 big well known stocks, one from each sector, no repeats, on purpose.
+# they're all in totally different industries so they shouldn't really be
+# moving together day to day unless something bigger (market-wide fear) is
+# going on. (earlier version of this had 2 stocks in the same sector by
+# accident, which meant regular sector news could bump the correlation
+# number up even when nothing market-wide was happening - fixed that by
+# making sure every sector only shows up once)
 DEFAULT_BASKET = {
     "AAPL": "Technology",
     "JPM": "Financials",
@@ -27,11 +26,11 @@ DEFAULT_BASKET = {
 }
 
 VIX_TICKER = "^VIX"
-# ^ means index; not a tradeable stock
+# the ^ means it's an index, not something you can actually buy/sell
 
 
 def download_prices(tickers: list[str], start: str, end: str | None = None) -> pd.DataFrame:
-    """Download split/dividend-adjusted daily close prices for `tickers`."""
+    """Grabs daily close prices for `tickers`, adjusted for splits/dividends."""
     raw = yf.download(tickers, start=start, end=end, auto_adjust=True, progress=False)
     closes = raw["Close"]
     if isinstance(closes, pd.Series):
@@ -44,10 +43,8 @@ def load_basket_and_vix(
     end: str | None = None,
     basket: dict[str, str] | None = None,
 ) -> tuple[pd.DataFrame, pd.Series]:
-    """Load basket prices and VIX level, aligned to the same trading calendar.
-
-    Returns (basket_prices, vix_level) — both indexed on the dates the basket
-    and the VIX both traded, so downstream code never has to reconcile calendars.
+    """Loads the basket's prices and the VIX level, lined up on the same
+    trading days so nothing later has to worry about mismatched calendars.
     """
     basket = basket or DEFAULT_BASKET
     tickers = list(basket.keys())

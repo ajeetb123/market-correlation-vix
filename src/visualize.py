@@ -1,8 +1,9 @@
-"""Seaborn/matplotlib charts for the correlation-vs-VIX analysis.
+"""All the charts for this project, made with matplotlib/seaborn.
 
-Two colors are used consistently throughout: blue for correlation-side
-series, vermillion for VIX-side series. Both are from the Okabe-Ito
-colorblind-safe palette.
+I use the same two colors everywhere so it's easy to tell what's what at a
+glance: blue = correlation stuff, orange-red = VIX stuff. Found these two
+colors online as a pair that's supposed to still look different if you're
+colorblind.
 """
 
 from __future__ import annotations
@@ -18,8 +19,9 @@ VERMILLION = "#D55E00"
 
 
 def plot_correlation_heatmap(corr_matrix: pd.DataFrame, title: str, path: str) -> None:
-    """Diverging heatmap for a single n-by-n correlation matrix, centered at 0
-    since correlation is a polarity measure (co-moves / doesn't / moves inverse).
+    """Heatmap for one n-by-n correlation matrix, centered on 0 since
+    correlation can be positive (moves together), zero (no relationship),
+    or negative (moves opposite).
     """
     fig, ax = plt.subplots(figsize=(8, 7))
     sns.heatmap(
@@ -42,10 +44,10 @@ def plot_correlation_heatmap(corr_matrix: pd.DataFrame, title: str, path: str) -
 
 
 def plot_avg_correlation_vs_vix(avg_corr: pd.Series, vix: pd.Series, path: str) -> None:
-    """Average correlation and VIX stacked on shared-x panels rather than a
-    dual-axis chart — the two series live on incomparable scales (0-1 vs.
-    roughly 10-80), and a shared axis with two scales invites misreading how
-    big a move in one is relative to the other.
+    """Puts avg correlation and VIX on two stacked charts instead of one
+    chart with two y-axes - the two numbers are on totally different scales
+    (0-1 vs roughly 10-80) so smushing them onto one axis makes it too easy
+    to misread how big a move in one actually is compared to the other.
     """
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 7), sharex=True)
 
@@ -65,8 +67,8 @@ def plot_avg_correlation_vs_vix(avg_corr: pd.Series, vix: pd.Series, path: str) 
 def plot_cross_correlation(xcorr: pd.Series, path: str) -> None:
     fig, ax = plt.subplots(figsize=(10, 5))
     peak_lag = xcorr.idxmax()
-    # Color only the tallest bar differently, so the reader's eye lands on
-    # the answer (which lag wins) without having to compare 41 bar heights.
+    # only color the tallest bar differently so your eye goes straight to
+    # the answer instead of having to compare every single bar height
     colors = [VERMILLION if lag == peak_lag else BLUE for lag in xcorr.index]
     ax.bar(xcorr.index, xcorr.values, color=colors, width=0.8)
     ax.axvline(0, color="gray", linewidth=1, linestyle="--")
@@ -80,9 +82,10 @@ def plot_cross_correlation(xcorr: pd.Series, path: str) -> None:
 
 def plot_event_study(event_changes: pd.Series, baseline_mean: float, horizon: int, path: str) -> None:
     fig, ax = plt.subplots(figsize=(9, 5))
-    # stat="density" (not raw counts) so the histogram's shape is comparable
-    # regardless of how many events were found - relevant since n_events
-    # varies with the spike threshold and can be a very small sample.
+    # stat="density" instead of raw counts so the shape of the histogram is
+    # comparable no matter how many events got found - the number of events
+    # changes depending on the spike threshold and can be a pretty small
+    # sample
     sns.histplot(event_changes, bins=15, color=BLUE, ax=ax, stat="density")
     ax.axvline(
         baseline_mean,
