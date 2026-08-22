@@ -15,7 +15,6 @@ def rolling_zscore(series: pd.Series, lookback: int) -> pd.Series:
 
 
 def cross_correlation(x: pd.Series, y: pd.Series, max_lag: int) -> pd.Series:
-    """corr(x_t, y_{t+lag}) for lag in [-max_lag, max_lag].
 
     Positive lag: x today is compared against y `lag` days in the future.
     If the peak sits at a positive lag, x's moves tend to precede y's —
