@@ -6,7 +6,13 @@ import pandas as pd
 
 
 def daily_returns(prices: pd.DataFrame) -> pd.DataFrame:
-    """Simple daily percent returns."""
+    """Simple daily percent returns.
+
+    Correlating on returns rather than raw prices matters: two unrelated
+    stocks that have simply both trended upward for a decade would show a
+    high price correlation with no connection to how they actually trade
+    day to day, which is what this whole project is trying to measure.
+    """
     return prices.pct_change().dropna(how="all")
 
 
