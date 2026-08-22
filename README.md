@@ -1,81 +1,81 @@
 # Market Correlation vs. VIX
 
-🚧 **still a work in progress.** This is a school-adjacent side project I started after reading [an article](https://www.advisorperspectives.com/articles/2025/10/06/what-signals-market-vix-blow-up) by Horstmeyer, Holtman & Bondugula about what signals a coming market "blow up." I'm basically taking one idea from that article and turning it into my own little Python thing.
+🚧 **Work in progress.** This project was inspired by [an article](https://www.advisorperspectives.com/articles/2025/10/06/what-signals-market-vix-blow-up) by Horstmeyer, Holtman & Bondugula about what signals a coming market "blow up." It takes one idea from that article and builds a small Python pipeline around it.
 
-## The idea, in normal words
+## The idea
 
-When the market panics, people stop caring about individual companies and just sell everything at once. So stocks that normally have nothing to do with each other (like an oil company and a healthcare company) start moving together, because everyone's selling for the same reason (fear), not for reasons specific to that company.
+When the market panics, investors tend to stop evaluating companies individually and sell everything at once. As a result, stocks that normally have little to do with each other — say, an oil company and a healthcare company — start moving together, since the selling is driven by broad fear rather than anything specific to either company.
 
-The question I'm trying to answer: **does that "everything moving together" thing happen BEFORE the VIX spikes, or does it just happen at the same time as the VIX spike?**
+The question this project asks: **does that rise in correlation happen *before* the VIX spikes, or does it happen at the same time?**
 
-The VIX is basically the market's "fear gauge" — it goes up when people expect big swings coming. If correlation spiking is something that happens *before* the VIX spikes, that'd be kind of a big deal, because it means you could maybe use it as an early warning sign. If it just happens at the same time, it's a lot less useful as a warning sign, it's just... two things that panic does at once.
+The VIX is often described as the market's "fear gauge" — it rises when investors expect bigger price swings ahead. If a correlation spike consistently happens before the VIX spikes, that would be meaningful, since it could work as an early warning sign. If the two move together instead, correlation is a lot less useful as a warning sign — it's just another symptom of the same panic, not a signal that comes ahead of it.
 
-## What I actually did
+## What the project does
 
-1. Picked 10 well-known, large stocks that are each in a different industry (Apple, JPMorgan, Exxon, Johnson & Johnson, Procter & Gamble, Home Depot, Caterpillar, Linde, Verizon, NextEra), so none of them should be moving together for normal reasons — only if something market-wide is happening. See [`src/data.py`](src/data.py).
-2. Downloaded daily prices for all 10 plus the VIX, going back to 2015, using [yfinance](https://github.com/ranaroussi/yfinance).
-3. Turned the prices into daily percent changes instead of using raw prices. This part actually matters — two totally unrelated stocks that both went up for 10 years straight would *look* correlated on raw price even though it means nothing about how they trade day to day. See [`src/correlation.py`](src/correlation.py).
-4. For every day, calculated the average correlation across every pair of stocks over the past 20 trading days. This gives one number per day: "how much is everything moving together right now."
-5. Compared that number against the VIX three different ways to check if one leads the other (details below). See [`src/analysis.py`](src/analysis.py).
-6. Made a bunch of charts. See [`src/visualize.py`](src/visualize.py).
+1. Selects 10 well-known, large-cap stocks, one from each of 10 different industries (Apple, JPMorgan, Exxon, Johnson & Johnson, Procter & Gamble, Home Depot, Caterpillar, Linde, Verizon, NextEra), so that under normal conditions they shouldn't move together — only a broad, market-wide event should cause that. See [`src/data.py`](src/data.py).
+2. Downloads daily prices for all 10 stocks plus the VIX, back to 2015, using [yfinance](https://github.com/ranaroussi/yfinance).
+3. Converts prices into daily percent changes rather than working with raw prices. This step matters: two unrelated stocks that simply trended upward over a decade would look highly correlated on price alone, even though that says nothing about how they actually trade day to day. See [`src/correlation.py`](src/correlation.py).
+4. For each day, computes the average correlation across every pair of stocks over the trailing 20 trading days — one number per day representing how much the basket is moving together.
+5. Compares that number against the VIX using three different methods to test for a lead/lag relationship (explained below). See [`src/analysis.py`](src/analysis.py).
+6. Generates charts summarizing the results. See [`src/visualize.py`](src/visualize.py).
 
-## The three tests, explained without a stats textbook
+## The three tests, explained simply
 
-- **Cross-correlation** — I lined up the two series at every possible time offset from -20 to +20 trading days and checked which offset makes them match up best. If correlation really does lead the VIX, the best match should be on the positive side.
-- **Granger causality** — a statistical test that basically asks: "if I already know the VIX's own recent history, does *also* knowing the correlation number's recent history help me guess the VIX any better?" A small p-value there is evidence that yes, it helps.
-- **Event study** — I found the days where the correlation number spiked way above its own normal range (using a z-score, which is just "how many standard deviations away from its own recent average is this"), and then checked what the VIX did over the next 10 trading days after those spikes, compared to a random 10-day stretch.
+- **Cross-correlation** — compares the two series at every possible time offset, from 20 days behind to 20 days ahead, and finds which offset lines them up best. If correlation truly leads the VIX, the best match should fall on the positive side.
+- **Granger causality** — a statistical test that asks: given the VIX's own recent history, does also knowing the correlation number's recent history improve a prediction of the VIX? A small p-value is evidence that it does.
+- **Event study** — identifies days when the correlation number spiked well above its normal range (measured with a z-score — essentially, how many standard deviations above its own recent average a value is), then checks how the VIX behaved over the following 10 trading days, compared to a typical 10-day stretch.
 
-## What I found so far
+## Results so far
 
-Short version: it doesn't really look like correlation leads the VIX in this data. All three tests point roughly the same direction — more "happens around the same time" or even "VIX moves slightly first," not "correlation spikes first as a warning sign."
+The short version: correlation doesn't appear to lead the VIX in this dataset. All three tests point in roughly the same direction — closer to "happens at the same time," or even "the VIX moves slightly first" — rather than "correlation spikes first as a warning sign."
 
 ![Average correlation vs VIX](output/avg_corr_vs_vix.png)
 
-The cross-correlation test peaks at lag **−4**, meaning the VIX moved slightly *before* correlation here, not after:
+The cross-correlation test peaks at lag **−4**, meaning the VIX tended to move slightly *before* correlation in this data, not after:
 
 ![Cross-correlation](output/cross_correlation.png)
 
-Granger causality: best p-value across every lag I tried was 0.42 — nowhere close to significant.
+For Granger causality, the best (smallest) p-value across every lag tested was 0.42 — far from statistically significant.
 
-The event study is the most literal "does this actually warn you" test — and post-spike VIX changes actually averaged *lower* than a normal stretch (−2.4% vs. +2.3%), though the sample is tiny (16 events) so I don't trust that number much either way:
+The event study is the most direct test of whether this would actually work as a warning sign. Post-spike VIX changes averaged *lower* than a typical stretch (−2.4% vs. +2.3%), though the sample is small (16 events), so this result shouldn't be read as strong evidence either way:
 
 ![Event study](output/event_study.png)
 
-Sanity-check heatmap on the basket itself (not really testing the hypothesis, just checking the basket looks how I expected):
+This heatmap is a sanity check on the basket itself, not a test of the hypothesis — just confirming the basket behaves the way I expected:
 
 ![Correlation heatmap](output/heatmap_full_period.png)
 
-Ngl these numbers are way higher than I expected — almost everything's above 0.8, even stuff like Exxon and Home Depot. Not totally sure why yet since these are all different sectors. Might be something with how I'm calculating this one specific chart vs. the other ones, or it could just be that mega-cap stocks all trended up together over the last 10 years. Need to look into this more before I trust it.
+These numbers came out higher than expected — almost every pair is above 0.8, including stocks in unrelated industries like Exxon and Home Depot. I haven't fully tracked down why. It may be specific to how this particular chart is calculated compared to the others, or it may simply reflect that large-cap stocks broadly trended upward together over the past decade. Worth investigating further before drawing conclusions from it.
 
-**Bottom line so far:** not much evidence that correlation leads the VIX in this basket/period. That's still a real answer even if it's not the exciting one I was hoping for.
+**Bottom line:** the current results don't support "correlation leads the VIX" in this basket and time period. That's a real, useful finding, even though it isn't the result I originally expected.
 
-## Stuff I know is wrong or shaky with the code (being honest here)
+## Known issues with the code
 
-I haven't had anyone who's actually good at stats or software look this over, so here's what I'm pretty sure is rough around the edges, worst first:
+This hasn't been reviewed by anyone with more experience in statistics or software, so here is an honest list of what's still rough, roughly in order of importance:
 
-- **No error handling on the download step.** If yfinance is down, rate-limits me, or my wifi drops mid-download, the whole thing just crashes with a big ugly Python error instead of telling me what actually went wrong.
-- **I never actually wrote automated tests.** I *did* check the math by hand against some fake data I made up (that's what fixed the two bugs mentioned below), but I never saved that checking as actual test code I can just re-run. So if I break something later, I have no way to automatically catch it — I'd have to redo all that checking by hand again.
-- **No pinned versions.** My `requirements.txt` just says "any version newer than X" for everything. yfinance especially changes how it behaves between versions pretty often, so there's a real chance this whole thing breaks (or worse, silently gives different numbers) if someone installs it fresh in a year.
-- **Every run re-downloads everything.** There's no saving the data locally, so every single run pulls ~10 years of data for 11 tickers again. Slow, and also means if yfinance's historical numbers ever get revised, I'd never notice — the results could quietly change between runs without me knowing why.
-- **Everything is hardcoded.** The date range, the 20-day window, the z-score cutoff, all of it — they're just constants at the top of `main.py`. To try different settings I have to go edit the code directly instead of just passing an option when I run it.
-- **The numbers themselves never get saved anywhere**, only the charts. So I can't easily go back and compare exact numbers between two runs, or dig into the data further, without re-running the whole thing and reading it off the printed output.
-- **A couple of the charts and the underlying math could break on weird/edge-case data** (like if a run somehow comes back with barely any data) — I don't have any graceful "not enough data" message, it'd just throw a confusing error.
+- **No error handling around the data download.** If yfinance is unavailable, rate-limited, or the network drops mid-download, the program crashes with a raw Python error instead of a clear message about what went wrong.
+- **No automated tests.** The core calculations were checked by hand against sample data with known correct answers (that process caught the two bugs mentioned below), but that verification was never saved as reusable test code. Any future change could reintroduce a bug without anything catching it automatically.
+- **Dependency versions aren't pinned.** `requirements.txt` only specifies minimum versions. yfinance in particular changes behavior between releases fairly often, so installing this fresh in the future could break the pipeline, or worse, silently change the results.
+- **No local caching of downloaded data.** Every run re-downloads roughly 10 years of history for 11 tickers. This is slow, and it also means that if yfinance revises historical data later, results could change between runs without any indication of why.
+- **All parameters are hardcoded.** The date range, the correlation window, the z-score threshold, and so on are all constants at the top of `main.py`. Testing different settings currently requires editing the source code rather than passing options at run time.
+- **No numerical output is saved, only charts.** There's currently no way to compare exact results across runs, or dig further into the underlying numbers, without re-running the pipeline and reading values off the console output.
+- **Limited handling of edge cases.** If a run returns unusually little data, several calculations would likely fail with a confusing error rather than a clear "not enough data" message.
 
-## Stuff about the *idea* itself that might be shaky, not just the code
+## Limitations of the approach itself
 
-- **The basket might have survivorship bias.** I picked today's well-known big companies and applied them back to 2015. But that's using hindsight — I know AAPL and JPM turned out to be huge, stable companies. Someone in 2015 didn't necessarily know that. A more honest test would use a basket that was actually big/stable back in 2015, not one picked with 2026 knowledge.
-- **I tested the same idea three different ways and didn't account for that.** Running cross-correlation, Granger causality, AND an event study on the same hypothesis means there's a higher chance one of them randomly comes back "significant" just by luck, compared to only running one test. All three agreeing here (all pointing "no lead") makes me feel better about it, but if only one of them had come back significant I'd want to be careful about reading too much into that.
-- **Granger causality assumes the data is "stationary"** (basically, that it doesn't have long-term trends/drift baked in), and I'm not sure the correlation series or the VIX actually qualify. If they're not stationary, the Granger test's p-value can be misleading rather than just noisy. I flagged this as a to-do below but I think it matters more than I originally gave it credit for.
+- **The basket may have survivorship bias.** The 10 stocks were chosen based on how large and well-known they are today, then applied retroactively back to 2015. That uses information that wasn't available at the time — a more rigorous version of this test would use a basket that was actually large and established as of 2015, not one selected with hindsight.
+- **The same hypothesis was tested three different ways, without adjusting for that.** Running cross-correlation, Granger causality, and an event study on the same question increases the odds that one of them shows a "significant" result purely by chance, compared to running a single test. All three agreeing here (all pointing toward "no lead") is reassuring, but if only one test had come back significant, that result should be treated with caution.
+- **Granger causality assumes the data is stationary** (roughly speaking, that it isn't drifting with a long-term trend), and it's not clear that either the correlation series or the VIX actually meets that assumption. If they don't, the resulting p-values could be misleading rather than simply noisy. This is listed as a next step below, but it likely matters more than originally assumed.
 
-## What I'd want to do next
+## Next steps
 
-- **Test on day-to-day changes instead of raw levels.** Both series carry over a lot from the previous day (they're "autocorrelated"), which can fake out a lead-lag relationship in both the cross-correlation and Granger tests. Redo it on daily differences as a double-check.
-- **Go back to the original article's full scope.** That piece also looked at commodities, debt, and specifically gold-vs-equity correlation — this project is stocks-only right now. Adding those back in is the most direct way to actually match what I'm building off of.
-- **Try different settings.** I've only ever tried one rolling window (20 days), one z-score cutoff (1.5), one lookback (252 days). I want to see if "no clear lead" still holds up across a range of nearby settings, or if I just got unlucky/lucky with these exact numbers.
-- **Try other baskets.** International stocks, smaller companies, or mixing in other asset types instead of just 10 U.S. large companies.
-- **Actually add the missing engineering stuff above** — tests, saving the raw data locally, pinning versions, making the settings changeable without editing code, saving numbers not just charts.
+- **Test on day-to-day changes rather than raw levels.** Both series carry over strongly from one day to the next, which can create a misleading lead/lag signal in both the cross-correlation and Granger tests. Repeating the analysis on daily differences would be a useful check.
+- **Extend to the original article's full scope.** The article this project is based on also covered commodities, debt, and gold-versus-equity correlation specifically; this project currently only looks at equities. Adding those back in would better match the source material.
+- **Test sensitivity to parameter choices.** Only one rolling window (20 days), one z-score threshold (1.5), and one lookback period (252 days) have been tried so far. The next step is checking whether the "no clear lead" finding holds across nearby parameter choices, or whether it's specific to these exact settings.
+- **Try other baskets.** International stocks, smaller companies, or a mix of asset classes instead of 10 U.S. large-cap stocks.
+- **Address the engineering gaps listed above** — automated tests, local data caching, pinned dependencies, configurable parameters, and saved numerical output.
 
-Two actual bugs from an earlier pass — an event-study baseline that accidentally included its own event days, and a calendar-day vs. trading-day mixup when de-duplicating spikes — got caught and fixed; see the commit history.
+Two earlier bugs — an event-study baseline that accidentally included its own event days, and a mixup between calendar days and trading days when de-duplicating spike events — were identified and fixed; see the commit history for details.
 
 ## How to run it
 
@@ -88,11 +88,11 @@ python main.py
 ## Project layout
 
 ```
-main.py         # runs the whole pipeline start to finish
+main.py         # runs the full pipeline end to end
 src/
   data.py        # yfinance download + basket definition
   correlation.py # returns, rolling correlation, average pairwise correlation
   analysis.py    # cross-correlation, Granger causality, event study
   visualize.py   # matplotlib/seaborn charts
-output/          # generated charts, committed so you can see them without re-running
+output/          # generated charts, committed so results are visible without re-running
 ```
