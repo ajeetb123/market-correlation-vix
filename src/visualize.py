@@ -65,6 +65,8 @@ def plot_avg_correlation_vs_vix(avg_corr: pd.Series, vix: pd.Series, path: str) 
 def plot_cross_correlation(xcorr: pd.Series, path: str) -> None:
     fig, ax = plt.subplots(figsize=(10, 5))
     peak_lag = xcorr.idxmax()
+    # Color only the tallest bar differently, so the reader's eye lands on
+    # the answer (which lag wins) without having to compare 41 bar heights.
     colors = [VERMILLION if lag == peak_lag else BLUE for lag in xcorr.index]
     ax.bar(xcorr.index, xcorr.values, color=colors, width=0.8)
     ax.axvline(0, color="gray", linewidth=1, linestyle="--")
@@ -78,6 +80,9 @@ def plot_cross_correlation(xcorr: pd.Series, path: str) -> None:
 
 def plot_event_study(event_changes: pd.Series, baseline_mean: float, horizon: int, path: str) -> None:
     fig, ax = plt.subplots(figsize=(9, 5))
+    # stat="density" (not raw counts) so the histogram's shape is comparable
+    # regardless of how many events were found - relevant since n_events
+    # varies with the spike threshold and can be a very small sample.
     sns.histplot(event_changes, bins=15, color=BLUE, ax=ax, stat="density")
     ax.axvline(
         baseline_mean,
