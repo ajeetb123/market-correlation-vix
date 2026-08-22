@@ -36,11 +36,15 @@ def identify_spike_events(z: pd.Series, threshold: float = 1.5, min_gap: int = 1
     crossings = z.index[(z > threshold) & (z.shift(1) <= threshold)]
     if len(crossings) == 0:
         return crossings
-    kept = [crossings[0]]
-    for d in crossings[1:]:
-        if (d - kept[-1]).days >= min_gap:
-            kept.append(d)
-    return pd.DatetimeIndex(kept)
+    # Compare by position in z's trading-day index, not calendar days elapsed -
+    # `(d - kept[-1]).days` would overcount the gap across a weekend/holiday
+    # (e.g. Friday to the next Monday is 3 calendar days but 1 trading day).
+    positions = z.index.get_indexer(crossings)
+    kept = [0]
+    for i in range(1, len(crossings)):
+        if positions[i] - positions[kept[-1]] >= min_gap:
+            kept.append(i)
+    return crossings[kept]
 
 
 def event_study(vix: pd.Series, events: pd.DatetimeIndex, horizon: int = 10) -> dict:
@@ -51,7 +55,10 @@ def event_study(vix: pd.Series, events: pd.DatetimeIndex, horizon: int = 10) -> 
     """
     fwd_change = vix.pct_change(horizon).shift(-horizon)
     event_changes = fwd_change.reindex(events).dropna()
-    baseline_changes = fwd_change.dropna()
+    # The event days themselves are excluded from the "unconditional" baseline -
+    # otherwise the control group would quietly include the exact days it's
+    # supposed to be compared against, biasing it toward the event group.
+    baseline_changes = fwd_change.drop(index=events, errors="ignore").dropna()
     t_stat, p_value = stats.ttest_ind(event_changes, baseline_changes, equal_var=False)
     return {
         "n_events": len(event_changes),
