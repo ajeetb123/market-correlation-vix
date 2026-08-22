@@ -28,7 +28,7 @@ from src.visualize import (
     plot_event_study,
 )
 
-START_DATE = "2015-01-01"
+START_DATE = "2015-01-01"  # ~10 years - long enough to span several VIX regimes (2018, 2020, 2022, 2025)
 CORR_WINDOW = 20  # trading days (~1 month) for the rolling correlation
 ZSCORE_LOOKBACK = 252  # 1 trading year, for defining a "spike" relative to recent history
 SPIKE_THRESHOLD = 1.5  # standard deviations
@@ -46,6 +46,9 @@ def main() -> None:
     print(f"  {len(prices)} trading days, {prices.shape[1]} tickers: {list(prices.columns)}")
 
     print("Computing rolling average pairwise correlation...")
+    # avg_corr starts CORR_WINDOW-1 days later than vix, since the rolling
+    # window needs that many days before it produces its first real value -
+    # this re-aligns both series onto exactly the dates they share.
     avg_corr = average_pairwise_correlation(returns, CORR_WINDOW)
     aligned_vix = vix.reindex(avg_corr.index).dropna()
     avg_corr = avg_corr.reindex(aligned_vix.index)
