@@ -60,6 +60,7 @@ This hasn't been reviewed by anyone with more experience in statistics or softwa
 - **All parameters are hardcoded.** The date range, the correlation window, the z-score threshold, and so on are all constants at the top of `main.py`. Testing different settings currently requires editing the source code rather than passing options at run time.
 - **No numerical output is saved, only charts.** There's currently no way to compare exact results across runs, or dig further into the underlying numbers, without re-running the pipeline and reading values off the console output.
 - **Limited handling of edge cases.** If a run returns unusually little data, several calculations would likely fail with a confusing error rather than a clear "not enough data" message.
+- **The cross-correlation lag range is probably off by one.** `cross_correlation()` in `src/analysis.py` loops over `range(-max_lag, max_lag)`, which leaves out the `+max_lag` endpoint (it should almost certainly be `range(-max_lag, max_lag + 1)`). So the cross-correlation chart is actually missing its last bar on the positive side. Doesn't change the overall conclusion here since the peak is nowhere near that edge, but I should fix this.
 
 ## Limitations of the approach itself
 
