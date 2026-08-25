@@ -1,14 +1,14 @@
 # Market Correlation vs. VIX
 
-🚧 **Work in progress.** This project was inspired by [an article](https://www.advisorperspectives.com/articles/2025/10/06/what-signals-market-vix-blow-up) by Horstmeyer, Holtman & Bondugula about what signals a coming market "blow up." It takes one idea from that article and builds a small Python pipeline around it.
+🚧 **Work in progress.** This project is an extension of a previous paper I co-authored [an article](https://www.advisorperspectives.com/articles/2025/10/06/what-signals-market-vix-blow-up) about what signals a coming market "blow up." It takes one idea from that article and builds a small Python pipeline around it.
 
 ## The idea
 
-When the market panics, investors tend to stop evaluating companies individually and sell everything at once. As a result, stocks that normally have little to do with each other — say, an oil company and a healthcare company — start moving together, since the selling is driven by broad fear rather than anything specific to either company.
+When the market panics, investors tend to stop evaluating companies individually and sell everything at once. As a result, stocks that normally have little to do with each other, start moving together, since the selling is driven by broad fear rather than anything specific to either company.
 
 The question this project asks: **does that rise in correlation happen *before* the VIX spikes, or does it happen at the same time?**
 
-The VIX is often described as the market's "fear gauge" — it rises when investors expect bigger price swings ahead. If a correlation spike consistently happens before the VIX spikes, that would be meaningful, since it could work as an early warning sign. If the two move together instead, correlation is a lot less useful as a warning sign — it's just another symptom of the same panic, not a signal that comes ahead of it.
+The VIX is often described as the market's fear index, where it rises when investors expect bigger price swings ahead. If a correlation spike consistently happens before the VIX spikes, that would be meaningful, since it could work as an early warning sign. If the two move together instead, correlation is just another symptom of the same panic.
 
 ## What the project does
 
