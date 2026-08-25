@@ -12,22 +12,22 @@ The VIX is often described as the market's fear index, where it rises when inves
 
 ## What the project does
 
-1. Selects 10 well-known, large-cap stocks, one from each of 10 different industries (Apple, JPMorgan, Exxon, Johnson & Johnson, Procter & Gamble, Home Depot, Caterpillar, Linde, Verizon, NextEra), so that under normal conditions they shouldn't move together — only a broad, market-wide event should cause that. See [`src/data.py`](src/data.py).
+1. Selects 10 well-known, large-cap stocks, one from each of 10 different industries (Apple, JPMorgan, Exxon, Johnson & Johnson, Procter & Gamble, Home Depot, Caterpillar, Linde, Verizon, NextEra), so that under normal conditions they shouldn't move together. Only a market-wide event should cause the stocks to move together. See [`src/data.py`](src/data.py).
 2. Downloads daily prices for all 10 stocks plus the VIX, back to 2015, using [yfinance](https://github.com/ranaroussi/yfinance).
-3. Converts prices into daily percent changes rather than working with raw prices. This step matters: two unrelated stocks that simply trended upward over a decade would look highly correlated on price alone, even though that says nothing about how they actually trade day to day. See [`src/correlation.py`](src/correlation.py).
-4. For each day, computes the average correlation across every pair of stocks over the trailing 20 trading days — one number per day representing how much the basket is moving together.
+3. Converts prices into daily percent changes rather than working with raw prices, to more easily spot when stocks are actually moving together instead of just all drifting upward over time. See [`src/correlation.py`](src/correlation.py).
+4. For each day, computes the average correlation across every pair of stocks over the trailing 20 trading days.
 5. Compares that number against the VIX using three different methods to test for a lead/lag relationship (explained below). See [`src/analysis.py`](src/analysis.py).
 6. Generates charts summarizing the results. See [`src/visualize.py`](src/visualize.py).
 
 ## The three tests, explained simply
 
-- **Cross-correlation** — compares the two series at every possible time offset, from 20 days behind to 20 days ahead, and finds which offset lines them up best. If correlation truly leads the VIX, the best match should fall on the positive side.
-- **Granger causality** — a statistical test that asks: given the VIX's own recent history, does also knowing the correlation number's recent history improve a prediction of the VIX? A small p-value is evidence that it does.
-- **Event study** — identifies days when the correlation number spiked well above its normal range (measured with a z-score — essentially, how many standard deviations above its own recent average a value is), then checks how the VIX behaved over the following 10 trading days, compared to a typical 10-day stretch.
+- **Cross-correlation**: compares the two series at every possible time offset, from 20 days behind to 20 days ahead, and finds which offset lines them up best. If correlation truly leads the VIX, the best match should fall on the positive side.
+- **Granger causality**: a statistical test that asks: given the VIX's own recent history, does also knowing the correlation number's recent history improve a prediction of the VIX? A small p-value is evidence that it does.
+- **Event study**: identifies days when the correlation number spiked well above its normal range (measured with a z-score — essentially, how many standard deviations above its own recent average a value is), then checks how the VIX behaved over the following 10 trading days, compared to a typical 10-day stretch.
 
 ## Results so far
 
-The short version: correlation doesn't appear to lead the VIX in this dataset. All three tests point in roughly the same direction — closer to "happens at the same time," or even "the VIX moves slightly first" — rather than "correlation spikes first as a warning sign."
+Correlation doesn't appear to lead the VIX in this dataset. All three tests point in roughly the same direction — closer to "happens at the same time," or even "the VIX moves slightly first" — rather than "correlation spikes first as a warning sign."
 
 ![Average correlation vs VIX](output/avg_corr_vs_vix.png)
 
