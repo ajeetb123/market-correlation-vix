@@ -28,10 +28,13 @@ def cross_correlation(x: pd.Series, y: pd.Series, max_lag: int) -> pd.Series:
     x_s = df.iloc[:, 0]
     y_s = df.iloc[:, 1]
 
+    # not the cleanest way to do this (could probably do it in one line
+    # with a dict comprehension) but this is easier for me to read
     results = {}
     for lag in range(-max_lag, max_lag):
         shifted_y = y_s.shift(-lag)
-        results[lag] = x_s.corr(shifted_y)
+        corr_at_lag = x_s.corr(shifted_y)
+        results[lag] = corr_at_lag
 
     out = pd.Series(results)
     out = out.sort_index()
@@ -47,7 +50,7 @@ def identify_spike_events(z: pd.Series, threshold: float = 1.5, min_gap: int = 1
     """
     crossings = z.index[(z > threshold) & (z.shift(1) <= threshold)]
     if len(crossings) == 0:
-        return crossings
+        return crossings  # nothing crossed the threshold at all, nothing to do here
     # using position in the index (trading days) instead of real calendar
     # days - otherwise a Friday -> Monday gap counts as 3 days when it's
     # really just 1 trading day apart
@@ -65,7 +68,7 @@ def event_study(vix: pd.Series, events: pd.DatetimeIndex, horizon: int = 10) -> 
     stretch, using a t-test that doesn't assume both groups have the same
     amount of spread (the spike group is a lot smaller).
     """
-    fwd_change = vix.pct_change(horizon).shift(-horizon)
+    fwd_change = vix.pct_change(horizon).shift(-horizon)  # % change from t to t+horizon, but shifted back so it lines up with day t
     event_changes = fwd_change.reindex(events).dropna()
     # gotta pull the event days OUT of the "normal" comparison group, or
     # else the comparison secretly includes the exact days it's supposed to

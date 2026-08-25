@@ -32,10 +32,10 @@ from src.visualize import (
 START_DATE = "2015-01-01"  # ~10 years - long enough to span several VIX regimes (2018, 2020, 2022, 2025)
 CORR_WINDOW = 20  # trading days (~1 month) for the rolling correlation
 ZSCORE_LOOKBACK = 252  # 1 trading year, for defining a "spike" relative to recent history
-SPIKE_THRESHOLD = 1.5  # standard deviations
+SPIKE_THRESHOLD = 1.5  # standard deviations, picked this kind of arbitrarily, might play with it later
 EVENT_HORIZON = 10  # trading days forward when measuring VIX's reaction
 MAX_LAG = 20  # trading days, for cross-correlation and Granger tests
-OUTPUT_DIR = "output"
+OUTPUT_DIR = "output"  # everything gets dumped in here
 
 
 def main() -> None:

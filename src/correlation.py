@@ -40,7 +40,7 @@ def average_pairwise_correlation(returns: pd.DataFrame, window: int) -> pd.Serie
     Averaging every unique pair (not just each stock vs. the overall
     average) so no single stock can quietly dominate the number.
     """
-    n = returns.shape[1]
+    n = returns.shape[1]  # number of stocks in the basket
     corr = returns.rolling(window).corr()
 
     # add up each stock's row of correlations (n numbers, including its own
@@ -52,7 +52,10 @@ def average_pairwise_correlation(returns: pd.DataFrame, window: int) -> pd.Serie
     total = row_sums.groupby(level=0).sum(min_count=n)
 
     # total right now = n diagonal 1.0s + 2x every unique pair's correlation
+    # (draw it out on paper for a 3x3 matrix if this doesn't make sense, it
+    # took me a minute to convince myself this was right too)
     n_pairs = n * (n - 1)
     avg = (total - n) / n_pairs
     avg.name = "avg_pairwise_corr"
-    return avg.dropna()
+    avg = avg.dropna()
+    return avg

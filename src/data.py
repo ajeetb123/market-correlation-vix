@@ -32,10 +32,15 @@ VIX_TICKER = "^VIX"
 def download_prices(tickers: list[str], start: str, end: str | None = None) -> pd.DataFrame:
     """Grabs daily close prices for `tickers`, adjusted for splits/dividends."""
     raw = yf.download(tickers, start=start, end=end, auto_adjust=True, progress=False)
+    # raw['Adj Close'] used to be the one to use but newer yfinance folds
+    # the adjustment into 'Close' automatically now (auto_adjust=True), so
+    # 'Adj Close' doesn't even exist as a column anymore. took me a while
+    # to figure out why my old code was throwing a KeyError lol
     closes = raw["Close"]
     if isinstance(closes, pd.Series):
         closes = closes.to_frame(tickers[0])
-    return closes.ffill().dropna(how="all")
+    df = closes.ffill().dropna(how="all")
+    return df
 
 
 def load_basket_and_vix(
@@ -47,8 +52,11 @@ def load_basket_and_vix(
     trading days so nothing later has to worry about mismatched calendars.
     """
     basket = basket or DEFAULT_BASKET
-    tickers = list(basket.keys())
+    tickers = list(basket.keys())  # just the ticker symbols, don't need the sector names here
     basket_prices = download_prices(tickers, start, end)
     vix = download_prices([VIX_TICKER], start, end)[VIX_TICKER].rename("VIX")
+    # inner join so we only keep dates where BOTH the basket and the VIX
+    # actually have a price - VIX and stocks are usually on the same
+    # calendar anyway but better safe than sorry
     aligned = basket_prices.join(vix, how="inner").dropna()
     return aligned[tickers], aligned["VIX"]

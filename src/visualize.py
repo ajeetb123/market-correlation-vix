@@ -15,7 +15,7 @@ import seaborn as sns
 sns.set_theme(style="white", context="talk")
 
 BLUE = "#0072B2"
-VERMILLION = "#D55E00"
+VERMILLION = "#D55E00"  # this is actually more of an orange/red but that's what the palette calls it
 
 
 def plot_correlation_heatmap(corr_matrix: pd.DataFrame, title: str, path: str) -> None:
@@ -23,7 +23,7 @@ def plot_correlation_heatmap(corr_matrix: pd.DataFrame, title: str, path: str) -
     correlation can be positive (moves together), zero (no relationship),
     or negative (moves opposite).
     """
-    fig, ax = plt.subplots(figsize=(8, 7))
+    fig, ax = plt.subplots(figsize=(8, 7))  # figsize is trial and error honestly, this just looked right
     sns.heatmap(
         corr_matrix,
         vmin=-1,
