@@ -6,7 +6,7 @@
 
 When the market panics, investors tend to stop evaluating companies individually and sell everything at once. As a result, stocks that normally have little to do with each other, start moving together, since the selling is driven by broad fear rather than anything specific to either company.
 
-The question this project asks: **does that rise in correlation happen *before* the VIX spikes, or does it happen at the same time?**
+The question this project asks: does that rise in correlation happen *before* the VIX spikes, or does it happen at the same time?**
 
 The VIX is often described as the market's fear index, where it rises when investors expect bigger price swings ahead. If a correlation spike consistently happens before the VIX spikes, that would be meaningful, since it could work as an early warning sign. If the two move together instead, correlation is just another symptom of the same panic.
 
