@@ -52,7 +52,9 @@ def prices_from_returns(
     start_price: float = 100.0,
 ) -> pd.DataFrame:
     """Price = start_price * exp(cumsum(returns)). Columns = tickers."""
-    return pd.DataFrame(start_price * np.exp(np.cumsum(returns, axis=0)), index=dates, columns=tickers)
+    return pd.DataFrame(
+        start_price * np.exp(np.cumsum(returns, axis=0)), index=dates, columns=tickers
+    )
 
 
 def make_vix(

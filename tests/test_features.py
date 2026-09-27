@@ -14,7 +14,9 @@ from vixagent.features.zscore import trailing_zscore
 
 
 def _frame(arr: np.ndarray) -> pd.DataFrame:
-    return pd.DataFrame(arr, index=make_dates(len(arr)), columns=[f"A{i}" for i in range(arr.shape[1])])
+    return pd.DataFrame(
+        arr, index=make_dates(len(arr)), columns=[f"A{i}" for i in range(arr.shape[1])]
+    )
 
 
 def test_log_returns_hand_example() -> None:

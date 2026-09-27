@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 from collections.abc import Callable
 from datetime import date, timedelta
+from typing import cast
 
 import pandas as pd
 import yfinance as yf
@@ -24,9 +25,9 @@ def _extract_close(raw: pd.DataFrame, tickers: list[str]) -> pd.DataFrame:
     cols = raw.columns
     if isinstance(cols, pd.MultiIndex):
         if "Close" in cols.get_level_values(0):
-            return raw["Close"]
+            return cast(pd.DataFrame, raw["Close"])
         if "Close" in cols.get_level_values(1):
-            return raw.xs("Close", axis=1, level=1)
+            return cast(pd.DataFrame, raw.xs("Close", axis=1, level=1))
         raise DataError("Downloaded data has no Close field")
     if len(tickers) == 1 and "Close" in cols:
         return raw[["Close"]].rename(columns={"Close": tickers[0]})

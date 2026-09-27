@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 import numpy as np
 import pandas as pd
 
@@ -17,7 +19,7 @@ def vix_ratio(vix: pd.Series, lookback: int) -> pd.Series:
 
 def vix_momentum(vix: pd.Series, k: int = 5) -> pd.Series:
     """ln(V_t / V_{t-k}): recent VIX change, used as a regression control."""
-    return np.log(vix / vix.shift(k)).rename(f"vix_mom_{k}d")
+    return cast(pd.Series, np.log(vix / vix.shift(k))).rename(f"vix_mom_{k}d")
 
 
 def log_vix(vix: pd.Series) -> pd.Series:
@@ -26,4 +28,4 @@ def log_vix(vix: pd.Series) -> pd.Series:
     Why log: VIX changes are roughly proportional to its level, so the log
     scale makes the level control closer to linear.
     """
-    return np.log(vix).rename("log_vix")
+    return cast(pd.Series, np.log(vix)).rename("log_vix")

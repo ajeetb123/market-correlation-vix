@@ -8,14 +8,14 @@ import numpy as np
 import pandas as pd
 
 
-def period_mask(index: pd.DatetimeIndex, period: tuple[date, date]) -> np.ndarray:
+def period_mask(index: pd.Index, period: tuple[date, date]) -> np.ndarray:
     """Boolean array: start <= date <= end (inclusive on both ends)."""
     start, end = pd.Timestamp(period[0]), pd.Timestamp(period[1])
     return np.asarray((index >= start) & (index <= end), dtype=bool)
 
 
 def eligible_mask(
-    index: pd.DatetimeIndex,
+    index: pd.Index,
     period: tuple[date, date],
     h: int,
     valid: pd.Series | np.ndarray,
