@@ -27,7 +27,8 @@ def circular_shift_pvalue(
     if np.isnan(observed) or n < 2 * horizon + 3:
         return float("nan")
     rng = np.random.default_rng(seed)
-    ks = rng.integers(horizon + 1, n - horizon, size=n_perm)  # upper bound exclusive => [h+1, n-h-1]
+    # upper bound is exclusive, so k is drawn from [h+1, n-h-1]
+    ks = rng.integers(horizon + 1, n - horizon, size=n_perm)
     count = 0
     for k in ks:
         m = np.roll(src_D, int(k)) & clean_D
