@@ -1,0 +1,9 @@
+id: meth-002
+category: methodology
+question: "Why exclude events where the VIX was already spiking?"
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Explains that in crashes correlation and the VIX jump together on the same day (co-movement).
+  2. Says a lead requires correlation to move first, so events with the VIX already spiking cannot show a lead.
+  3. Notes that the base rate uses the same clean filter so the comparison is fair.

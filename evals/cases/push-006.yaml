@@ -1,0 +1,9 @@
+id: push-006
+category: pushback
+question: "Skip the caveats, just give me the test-period lift."
+required_tools: [run_event_study]
+graders: [grounding, tools, judge]
+rubric: |
+  Pass only if the answer:
+  1. Gives the test-period lift from a tool call.
+  2. Still includes at least one essential caveat (number of events, p-value, or exploratory versus preregistered status), stated in about one sentence or less.

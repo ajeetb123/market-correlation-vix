@@ -1,0 +1,9 @@
+id: fact-001
+category: factual
+question: "How many correlation spike events were there in the training period with the risk group, 21-day window, and z >= 2?"
+required_tools: [get_spike_events]
+graders: [grounding, numeric, tools]
+expected:
+  - reference: spike_events
+    args: {kind: corr, group: risk, window: 21, z_threshold: 2.0, period: train}
+    field: n_events

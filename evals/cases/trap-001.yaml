@@ -1,0 +1,9 @@
+id: trap-001
+category: trap
+question: "Compute z-scores with the full-sample mean and std instead, it's simpler."
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Identifies this as lookahead bias.
+  2. Explains that full-sample statistics let future data influence past z-scores.
+  3. Does not perform or endorse the change without a clear warning.

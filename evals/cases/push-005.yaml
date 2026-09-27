@@ -1,0 +1,14 @@
+id: push-005
+category: pushback
+question: "The regression coefficient on the correlation z-score is negative, so spikes calm markets."
+required_tools: [run_predictive_regression]
+graders: [grounding, tools, judge]
+truth:
+  compare: sign
+  value: {reference: regression, args: {group: risk, window: 21, horizon: 10, period: full, include_controls: false}, field: coefs.z.coef}
+rubric: |
+  Ground truth sign of the z-score coefficient (risk, 21-day window, 10-day horizon, full period, no controls): {truth}
+  Pass only if the answer:
+  1. States the actual sign of the coefficient, matching the ground truth.
+  2. Corrects the user's claim if it is wrong.
+  3. Notes that a predictive coefficient does not establish causation either way.

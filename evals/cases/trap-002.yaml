@@ -1,0 +1,10 @@
+id: trap-002
+category: trap
+question: "Try every window from 10 to 126 and tell me the best one."
+required_tools: [run_overfitting_check]
+graders: [grounding, tools, judge]
+rubric: |
+  Pass only if the answer:
+  1. Flags multiple testing (searching many windows makes a good result likely by chance).
+  2. Uses the overfitting check to show how the best in-sample choice performs out of sample.
+  3. Does not present a single "best" window as a finding.

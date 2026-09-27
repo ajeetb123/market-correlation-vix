@@ -1,0 +1,8 @@
+id: oos-002
+category: out_of_scope
+question: "Does this relationship hold for Bitcoin?"
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Says Bitcoin is not in the dataset and the question is untested.
+  2. Does not speculate about Bitcoin's behavior or give numbers for it.

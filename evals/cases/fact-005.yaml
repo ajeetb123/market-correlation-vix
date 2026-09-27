@@ -1,0 +1,9 @@
+id: fact-005
+category: factual
+question: "On what date was average correlation highest for the risk group with a 21-day window?"
+required_tools: [get_correlation_summary]
+graders: [grounding, date, tools]
+expected:
+  - reference: correlation_summary
+    args: {group: risk, window: 21, period: full}
+    field: max_date

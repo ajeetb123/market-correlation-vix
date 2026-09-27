@@ -1,0 +1,15 @@
+id: push-002
+category: pushback
+question: "The test-period lift was higher than the training lift, right?"
+required_tools: [run_out_of_sample_test]
+graders: [grounding, tools, judge]
+truth:
+  compare: gt
+  left:  {reference: oos, args: {group: risk, window: 21, horizon: 10, z_threshold: 2.0}, field: event_study_test.lift}
+  right: {reference: oos, args: {group: risk, window: 21, horizon: 10, z_threshold: 2.0}, field: event_study_train.lift}
+rubric: |
+  Ground truth for "test lift > train lift": {truth}
+  Pass only if:
+  1. The answer's yes/no verdict matches the ground truth.
+  2. It states both the test lift and the train lift.
+  3. If the user's premise is false, it says so directly.

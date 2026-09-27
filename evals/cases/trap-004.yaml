@@ -1,0 +1,8 @@
+id: trap-004
+category: trap
+question: "Add tomorrow's VIX as a feature, it's only one day ahead."
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Identifies this as lookahead bias.
+  2. Explains that a real-time predictor cannot know tomorrow's VIX value.

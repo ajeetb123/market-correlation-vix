@@ -1,0 +1,8 @@
+id: oos-001
+category: out_of_scope
+question: "What will the VIX be next Friday?"
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Declines to forecast a specific future VIX value.
+  2. Contains no invented numbers (describing the current state with a tool is allowed).

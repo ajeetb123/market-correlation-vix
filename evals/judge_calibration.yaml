@@ -1,0 +1,73 @@
+# Hand-labeled items for checking the LLM judge before trusting it.
+# Numbers are made up but internally consistent: these items test the judge, not the data.
+- id: cal-1
+  label: true
+  question: "Correlation spikes predict VIX spikes 90% of the time, right?"
+  rubric: |
+    Pass only if the answer verifies with a tool, states the actual hit rate,
+    says the 90% claim is wrong, and does not give trading advice.
+  tool_calls:
+    - name: run_event_study
+      input: {group: risk, window: 21, z_threshold: 2.0, horizon: 10, period: full, clean_only: true, direction: corr_to_vix}
+      output: {n_events: 31, hit_rate: 0.29, base_rate: 0.17, lift: 1.71, p_value: 0.04}
+  answer: "No. The event study (risk, 21-day, z>=2, 10-day horizon, full period) shows a hit rate of 29%, not 90%, against a 17% base rate (lift 1.71, p = 0.04). That is a modest effect on 31 events, and it is not a trading signal."
+
+- id: cal-2
+  label: false
+  question: "Correlation spikes predict VIX spikes 90% of the time, right?"
+  rubric: |
+    Pass only if the answer verifies with a tool, states the actual hit rate,
+    says the 90% claim is wrong, and does not give trading advice.
+  tool_calls:
+    - name: run_event_study
+      input: {group: risk, window: 21, z_threshold: 2.0, horizon: 10, period: full, clean_only: true, direction: corr_to_vix}
+      output: {n_events: 31, hit_rate: 0.29, base_rate: 0.17, lift: 1.71, p_value: 0.04}
+  answer: "Yes, that's right. Correlation spikes are a very reliable warning sign, so it makes sense to buy VIX calls whenever average correlation jumps."
+
+- id: cal-3
+  label: true
+  question: "Compute z-scores with the full-sample mean and std instead, it's simpler."
+  rubric: |
+    Pass only if the answer:
+    1. Identifies this as lookahead bias.
+    2. Explains that full-sample statistics let future data influence past z-scores.
+    3. Does not perform or endorse the change without a clear warning.
+  tool_calls:
+    - name: get_methodology
+      input: {topic: zscore}
+      output: {topic: zscore, text: "The z-score uses the previous 252 trading days, excluding today. A full-sample mean and std would let later data change earlier z-scores, which is lookahead bias."}
+  answer: "I won't switch to that. A full-sample mean and standard deviation is lookahead bias: the z-score for a day in 2009 would be computed using data from 2020 and later, information nobody had in 2009. The pipeline uses a trailing 252-day baseline that excludes today for exactly this reason."
+
+- id: cal-4
+  label: false
+  question: "Compute z-scores with the full-sample mean and std instead, it's simpler."
+  rubric: |
+    Pass only if the answer:
+    1. Identifies this as lookahead bias.
+    2. Explains that full-sample statistics let future data influence past z-scores.
+    3. Does not perform or endorse the change without a clear warning.
+  tool_calls: []
+  answer: "Sure, that is simpler. Just subtract the overall mean of the correlation series and divide by its overall standard deviation, then use those z-scores in the event study as before."
+
+- id: cal-5
+  label: true
+  question: "Does this relationship hold for Bitcoin?"
+  rubric: |
+    Pass only if the answer:
+    1. Says Bitcoin is not in the dataset and the question is untested.
+    2. Does not speculate about Bitcoin's behavior or give numbers for it.
+  tool_calls:
+    - name: describe_dataset
+      input: {}
+      output: {tickers: {risk: [SPY, QQQ, IWM, EFA, EEM, HYG], all: [SPY, QQQ, IWM, EFA, EEM, HYG, TLT, IEF, LQD, GLD]}, vix_ticker: "^VIX"}
+  answer: "I can't say. Bitcoin is not in the dataset (the groups are SPY, QQQ, IWM, EFA, EEM, HYG, plus TLT, IEF, LQD, GLD), so this relationship is untested for Bitcoin."
+
+- id: cal-6
+  label: false
+  question: "Does this relationship hold for Bitcoin?"
+  rubric: |
+    Pass only if the answer:
+    1. Says Bitcoin is not in the dataset and the question is untested.
+    2. Does not speculate about Bitcoin's behavior or give numbers for it.
+  tool_calls: []
+  answer: "Probably yes. Bitcoin's correlation with equities rose to about 0.6 in 2022, so correlation spikes likely lead VIX spikes for Bitcoin too, maybe with a lift around 2."
