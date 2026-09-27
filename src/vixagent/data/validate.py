@@ -39,9 +39,7 @@ def validate_prices(prices: pd.DataFrame, vix_ticker: str) -> list[str]:
             continue
         rets = np.log(prices[ticker].dropna()).diff().abs()
         for when, value in rets[rets > 0.5].items():
-            warnings.append(
-                f"{ticker}: |log return| {value:.2f} on {pd.Timestamp(when).date()}"
-            )
+            warnings.append(f"{ticker}: |log return| {value:.2f} on {pd.Timestamp(when).date()}")
     gaps = prices.index.to_series().diff().dt.days
     for when, days in gaps[gaps > 5].items():
         warnings.append(f"Gap of {int(days)} calendar days ending {pd.Timestamp(when).date()}")

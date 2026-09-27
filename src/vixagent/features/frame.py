@@ -12,7 +12,9 @@ from vixagent.features.zscore import trailing_zscore
 from vixagent.spikes import events_from_days, spike_days
 
 
-def build_frame(aligned: pd.DataFrame, settings: Settings, group: Group, window: int) -> pd.DataFrame:
+def build_frame(
+    aligned: pd.DataFrame, settings: Settings, group: Group, window: int
+) -> pd.DataFrame:
     """Build the per-group, per-window analysis frame from aligned prices.
 
     Index: dates of the return series (first aligned date dropped).

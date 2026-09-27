@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 import numpy as np
 import pandas as pd
 
@@ -12,4 +14,4 @@ def log_returns(prices: pd.DataFrame) -> pd.DataFrame:
     Why log returns: they are additive over time and symmetric, and correlating
     returns (not price levels) avoids spurious correlation between trending series.
     """
-    return np.log(prices).diff().iloc[1:]
+    return cast(pd.DataFrame, np.log(prices)).diff().iloc[1:]

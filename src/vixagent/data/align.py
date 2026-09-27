@@ -21,6 +21,6 @@ def align_group(prices: pd.DataFrame, settings: Settings, group: Group) -> tuple
     exchanges.
     """
     cols = [*settings.universe[group], settings.data.vix_ticker]
-    in_period = prices.loc[period_mask(prices.index, settings.full_period()), cols]
+    in_period = prices[cols].loc[period_mask(prices.index, settings.full_period())]
     aligned = in_period.dropna(how="any")
     return aligned, len(in_period) - len(aligned)
