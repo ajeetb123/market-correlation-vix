@@ -2,14 +2,23 @@
 
 from __future__ import annotations
 
+import json
 import time
+from pathlib import Path
+from typing import Any
 
+import anthropic
 import typer
 from dotenv import load_dotenv
 from rich.console import Console
+from rich.markdown import Markdown
 from rich.table import Table
 
 from vixagent import __version__
+from vixagent.agent.client import MissingAPIKeyError, agent_model, make_client
+from vixagent.agent.loop import AgentResult, run_agent
+from vixagent.agent.service import ResearchService
+from vixagent.agent.transcript import TranscriptWriter
 from vixagent.config import find_project_root, load_preregistered, load_settings
 from vixagent.data.align import align_group
 from vixagent.data.cache import load_or_fetch
@@ -78,3 +87,92 @@ def report() -> None:
     results = generate_report(settings, prereg, prices, find_project_root())
     console.print(headline_sentence(results))
     console.print(f"Report written in {time.perf_counter() - started:.1f}s.")
+
+
+def _agent_setup() -> tuple[Any, ResearchService, Path]:
+    """Create the client and service, exiting with a red message on failure."""
+    try:
+        client = make_client()
+    except MissingAPIKeyError as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    try:
+        service = ResearchService.from_cache()
+    except DataError as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    return client, service, find_project_root()
+
+
+def _render(result: AgentResult, transcript: TranscriptWriter, show_tools: bool) -> None:
+    console.print(Markdown(result.final_text or "_(no answer)_"))
+    if show_tools:
+        for call in result.tool_calls:
+            out = json.dumps(call.output)
+            if len(out) > 600:
+                out = out[:600] + "..."
+            flag = " [error]" if call.is_error else ""
+            console.print(
+                f"[dim]tool {call.name}{flag} {json.dumps(call.input)}\n  -> {out}[/dim]",
+                markup=True,
+                highlight=False,
+            )
+    console.print(
+        f"[dim]iterations {result.iterations} | tokens in {result.usage['input_tokens']} "
+        f"out {result.usage['output_tokens']} | transcript {transcript.path}[/dim]"
+    )
+
+
+@app.command()
+def ask(question: str, show_tools: bool = typer.Option(False, "--show-tools")) -> None:
+    """Ask the research agent one question."""
+    client, service, root = _agent_setup()
+    transcript = TranscriptWriter(root / "runs", question)
+    with console.status("Thinking..."):
+        result = run_agent(
+            question, client=client, service=service, model=agent_model(), transcript=transcript
+        )
+    _render(result, transcript, show_tools)
+
+
+@app.command()
+def chat(show_tools: bool = typer.Option(False, "--show-tools")) -> None:
+    """Multi-turn chat with the research agent."""
+    client, service, root = _agent_setup()
+    history: list[dict[str, Any]] = []
+    console.print(
+        "[dim]Commands: /tools toggles tool display, /reset clears history, /exit quits.[/dim]"
+    )
+    while True:
+        try:
+            question = console.input("you> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            break
+        if not question:
+            continue
+        if question == "/exit":
+            break
+        if question == "/reset":
+            history = []
+            console.print("History cleared.")
+            continue
+        if question == "/tools":
+            show_tools = not show_tools
+            console.print(f"Tool display {'on' if show_tools else 'off'}.")
+            continue
+        transcript = TranscriptWriter(root / "runs", question)
+        try:
+            with console.status("Thinking..."):
+                result = run_agent(
+                    question,
+                    client=client,
+                    service=service,
+                    model=agent_model(),
+                    history=history,
+                    transcript=transcript,
+                )
+        except anthropic.APIError as exc:
+            console.print(f"[red]API error: {exc}[/red]")
+            continue
+        history = result.messages
+        _render(result, transcript, show_tools)
