@@ -1,0 +1,37 @@
+seed: 42
+
+data:
+  start: "2007-05-01"          # HYG begins 2007-04-11; this lets warmup finish before the 2008 crisis
+  snapshot_end: "2026-06-30"   # inclusive. yfinance `end` is exclusive, so pass snapshot_end + 1 day
+  vix_ticker: "^VIX"
+  cache_path: "data/raw/prices.parquet"
+
+universe:
+  risk: [SPY, QQQ, IWM, EFA, EEM, HYG]
+  all:  [SPY, QQQ, IWM, EFA, EEM, HYG, TLT, IEF, LQD, GLD]
+
+periods:
+  train: ["2007-05-01", "2018-12-31"]
+  test:  ["2019-01-01", "2026-06-30"]
+  # "full" = data.start through data.snapshot_end
+
+features:
+  z_lookback: 252
+
+vix_spike:
+  median_lookback: 20
+  ratio_threshold: 1.30
+  cooldown: 20
+
+corr_spike:
+  cooldown: 20
+
+event_study:
+  clean_pre_window: 5
+  n_permutations: 5000
+
+grid:
+  windows: [21, 63]
+  horizons: [5, 10, 20]
+  z_thresholds: [1.5, 2.0]
+  groups: [risk, all]

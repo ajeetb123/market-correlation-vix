@@ -1,0 +1,11 @@
+primary:
+  group: risk
+  window: 21
+  z_threshold: 2.0
+  horizon: 10
+  clean_only: true
+  direction: corr_to_vix
+  alpha: 0.05
+note: >
+  Fixed before any results were computed. The headline result reported in the README
+  is this specification evaluated on the test period. All other grid results are exploratory.
