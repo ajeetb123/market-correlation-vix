@@ -15,7 +15,7 @@ from rich.markdown import Markdown
 from rich.table import Table
 
 from vixagent import __version__
-from vixagent.agent.client import MissingAPIKeyError, agent_model, make_client
+from vixagent.agent.client import MissingAPIKeyError, agent_model, judge_model, make_client
 from vixagent.agent.loop import AgentResult, run_agent
 from vixagent.agent.service import ResearchService
 from vixagent.agent.transcript import TranscriptWriter
@@ -24,6 +24,9 @@ from vixagent.data.align import align_group
 from vixagent.data.cache import load_or_fetch
 from vixagent.data.fetch import DataError
 from vixagent.data.validate import validate_prices
+from vixagent.evals.cases import load_cases
+from vixagent.evals.judge import calibrate
+from vixagent.evals.runner import run_suite
 from vixagent.report import generate_report
 from vixagent.report.results import headline_sentence
 
@@ -176,3 +179,51 @@ def chat(show_tools: bool = typer.Option(False, "--show-tools")) -> None:
             continue
         history = result.messages
         _render(result, transcript, show_tools)
+
+
+@app.command("eval")
+def eval_cmd(
+    category: str | None = typer.Option(None, help="Only run cases in this category."),
+    case: str | None = typer.Option(None, "--case", help="Only run this case id."),
+    repeats: int = typer.Option(1, min=1, max=5, help="Runs per case."),
+    max_cases: int | None = typer.Option(None, "--max-cases", min=1),
+    calibrate_judge: bool = typer.Option(False, "--calibrate-judge"),
+) -> None:
+    """Run the eval suite (or calibrate the LLM judge)."""
+    try:
+        client = make_client()
+    except MissingAPIKeyError as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    root = find_project_root()
+    if calibrate_judge:
+        agree, total, disagreements = calibrate(
+            client, judge_model(), root / "evals" / "judge_calibration.yaml"
+        )
+        for d in disagreements:
+            console.print(f"[red]{d}[/red]")
+        console.print(f"Judge calibration: {agree}/{total}")
+        raise typer.Exit(code=0 if agree == total else 1)
+
+    try:
+        cases = load_cases(root / "evals" / "cases")
+    except ValueError as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    if category:
+        cases = [c for c in cases if c.category == category]
+    if case:
+        cases = [c for c in cases if c.id == case]
+    if max_cases:
+        cases = cases[:max_cases]
+    if not cases:
+        console.print("[red]No cases match the filters.[/red]")
+        raise typer.Exit(code=1)
+    try:
+        service = ResearchService.from_cache()
+    except DataError as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    out_dir = run_suite(cases, repeats, root, service, client, client, agent_model(), judge_model())
+    console.print(Markdown((out_dir / "summary.md").read_text()))
+    console.print(f"Results written to {out_dir}")
