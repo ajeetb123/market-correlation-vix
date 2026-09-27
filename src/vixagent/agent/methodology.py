@@ -125,7 +125,7 @@ def _lookahead(s: Settings, p: Preregistered) -> str:
         "before rolling statistics). Second, only one module, targets.py, may look forward, and "
         "its outputs are named fwd_. Third, an automated test recomputes every feature on data "
         "truncated at random dates and requires identical values before each cut; a static "
-        "test also checks that shift(- appears only in targets.py."
+        "test also checks that negative shifts appear only in targets.py."
     )
 
 
