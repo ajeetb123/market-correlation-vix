@@ -6,9 +6,11 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import pytest
 
 from vixagent.config import Settings
-from vixagent.data.cache import all_tickers, load_or_fetch
+from vixagent.data.cache import all_tickers, load_cached_prices, load_or_fetch
+from vixagent.data.fetch import DataError
 
 
 class FakeFetcher:
@@ -80,3 +82,26 @@ def test_metadata_keys(panel: pd.DataFrame, small_settings: Settings, tmp_path: 
     load_or_fetch(small_settings, root=tmp_path, fetcher=FakeFetcher(panel))
     meta = json.loads(small_settings.data.cache_path.with_suffix(".meta.json").read_text())
     assert set(meta) == {"fetched_at", "yfinance_version", "tickers", "start", "end_inclusive"}
+
+
+def test_load_cached_prices_missing_raises(small_settings: Settings, tmp_path: Path) -> None:
+    with pytest.raises(DataError, match=r"No cached data found\. Run `vixagent pull` first\."):
+        load_cached_prices(small_settings, root=tmp_path)
+
+
+def test_load_cached_prices_loads_valid_cache(
+    panel: pd.DataFrame, small_settings: Settings, tmp_path: Path
+) -> None:
+    fetched = load_or_fetch(small_settings, root=tmp_path, fetcher=FakeFetcher(panel))
+    loaded = load_cached_prices(small_settings, root=tmp_path)
+    pd.testing.assert_frame_equal(fetched, loaded, check_freq=False)
+
+
+def test_load_cached_prices_mismatch_raises(
+    panel: pd.DataFrame, small_settings: Settings, tmp_path: Path
+) -> None:
+    load_or_fetch(small_settings, root=tmp_path, fetcher=FakeFetcher(panel))
+    d = small_settings.model_dump()
+    d["data"]["snapshot_end"] = d["periods"]["test"][1].replace(year=2030)
+    with pytest.raises(DataError):
+        load_cached_prices(Settings.model_validate(d), root=tmp_path)

@@ -12,7 +12,7 @@ import pandas as pd
 import yfinance as yf
 
 from vixagent.config import Settings, find_project_root
-from vixagent.data.fetch import fetch_prices
+from vixagent.data.fetch import DataError, fetch_prices
 from vixagent.data.validate import validate_prices
 
 logger = logging.getLogger(__name__)
@@ -36,6 +36,26 @@ def _expected_meta(settings: Settings) -> dict[str, object]:
     }
 
 
+def _resolve(settings: Settings, root: Path | None) -> Path:
+    path = settings.data.cache_path
+    return path if path.is_absolute() else (root or find_project_root()) / path
+
+
+def load_cached_prices(settings: Settings, root: Path | None = None) -> pd.DataFrame:
+    """Load the cached panel without ever touching the network.
+    Raises DataError("No cached data found. Run `vixagent pull` first.") if the
+    parquet or metadata file is missing, or if metadata does not match settings.
+
+    Why: the agent must never trigger a surprise download mid-conversation."""
+    path = _resolve(settings, root)
+    meta_path = _meta_path(path)
+    if path.exists() and meta_path.exists():
+        meta = json.loads(meta_path.read_text())
+        if all(meta.get(k) == v for k, v in _expected_meta(settings).items()):
+            return pd.read_parquet(path)
+    raise DataError("No cached data found. Run `vixagent pull` first.")
+
+
 def load_or_fetch(
     settings: Settings,
     refresh: bool = False,
@@ -56,9 +76,7 @@ def load_or_fetch(
     Why: Yahoo rate-limits and its history can be revised, so a fixed local
     snapshot makes results reproducible and runs fast.
     """
-    root = root or find_project_root()
-    path = settings.data.cache_path
-    path = path if path.is_absolute() else root / path
+    path = _resolve(settings, root)
     meta_path = _meta_path(path)
     expected = _expected_meta(settings)
 
