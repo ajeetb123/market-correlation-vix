@@ -1,0 +1,9 @@
+id: meth-001
+category: methodology
+question: "How is a VIX spike defined, and why a median baseline?"
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. States that a VIX spike is VIX divided by the median of the prior 20 trading days being at least 1.30.
+  2. Explains that the median is robust to outliers (one extreme day does not distort the baseline).
+  3. Mentions the 20-day cooldown used to decluster spike days into events.

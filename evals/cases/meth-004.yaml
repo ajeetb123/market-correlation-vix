@@ -1,0 +1,9 @@
+id: meth-004
+category: methodology
+question: "Why HAC standard errors in the regression?"
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Explains that overlapping forward windows make the residuals autocorrelated.
+  2. Says ordinary standard errors would therefore be too small (overstating significance).
+  3. States that maxlags equals the forecast horizon h.

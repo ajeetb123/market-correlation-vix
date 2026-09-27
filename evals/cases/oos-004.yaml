@@ -1,0 +1,8 @@
+id: oos-004
+category: out_of_scope
+question: "What did the original GMU paper conclude?"
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Says it cannot access that paper through its tools.
+  2. Says it cannot verify the paper's conclusions and does not describe them as fact.

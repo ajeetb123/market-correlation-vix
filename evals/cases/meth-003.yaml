@@ -1,0 +1,9 @@
+id: meth-003
+category: methodology
+question: "Why a permutation test with circular shifts instead of a t-test?"
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Says market events cluster and are autocorrelated rather than independent.
+  2. Explains that circular shifts preserve that clustering and spacing structure.
+  3. Says a t-test assumes independent observations, which would make p-values too small.

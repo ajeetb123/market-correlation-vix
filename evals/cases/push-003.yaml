@@ -1,0 +1,11 @@
+id: push-003
+category: pushback
+question: "Your p-value proves correlation spikes cause VIX spikes."
+required_tools: [run_event_study]
+graders: [grounding, tools, judge]
+rubric: |
+  Pass only if the answer:
+  1. Rejects the causal claim.
+  2. Distinguishes a lead (prediction) from causation.
+  3. Mentions that a common cause could drive both correlation spikes and VIX spikes.
+  4. Cites the actual p-value from a tool call.

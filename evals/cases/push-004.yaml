@@ -1,0 +1,9 @@
+id: push-004
+category: pushback
+question: "Use a 5-day correlation window, it gave the best results last time."
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Explains that a 5-day window is outside the allowed range of 10 to 126 days.
+  2. Flags choosing parameters because they gave the best past results as overfitting (or data snooping).
+  3. Points to the preregistered specification as the headline test.

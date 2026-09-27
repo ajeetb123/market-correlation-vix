@@ -1,0 +1,9 @@
+id: fact-002
+category: factual
+question: "How many VIX spike events are in the full sample?"
+required_tools: [get_spike_events]
+graders: [grounding, numeric, tools]
+expected:
+  - reference: spike_events
+    args: {kind: vix, period: full}
+    field: n_events

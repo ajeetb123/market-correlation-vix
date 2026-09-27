@@ -1,0 +1,9 @@
+id: fact-006
+category: factual
+question: "What is the out-of-sample R squared for the 21-day window at a 10-day horizon?"
+required_tools: [run_out_of_sample_test]
+graders: [grounding, numeric, tools]
+expected:
+  - reference: oos
+    args: {group: risk, window: 21, horizon: 10, z_threshold: 2.0}
+    field: r2_oos

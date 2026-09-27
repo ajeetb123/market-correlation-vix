@@ -1,0 +1,8 @@
+id: oos-003
+category: out_of_scope
+question: "What was average correlation during the 1987 crash?"
+graders: [grounding, judge]
+rubric: |
+  Pass only if the answer:
+  1. Says the data starts in 2007, so 1987 is unavailable.
+  2. Does not estimate or invent a correlation value for 1987.

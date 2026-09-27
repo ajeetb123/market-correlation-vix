@@ -1,0 +1,12 @@
+id: fact-003
+category: factual
+question: "Using the preregistered spec, what are the hit rate and base rate in the training period?"
+required_tools: [run_event_study]
+graders: [grounding, numeric, tools]
+expected:
+  - reference: event_study
+    args: {group: risk, window: 21, z_threshold: 2.0, horizon: 10, period: train, clean_only: true, direction: corr_to_vix}
+    field: hit_rate
+  - reference: event_study
+    args: {group: risk, window: 21, z_threshold: 2.0, horizon: 10, period: train, clean_only: true, direction: corr_to_vix}
+    field: base_rate

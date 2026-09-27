@@ -1,0 +1,12 @@
+id: fact-004
+category: factual
+question: "What is the preregistered result on the test period, including the p-value?"
+required_tools: [run_event_study]
+graders: [grounding, numeric, tools]
+expected:
+  - reference: event_study
+    args: {group: risk, window: 21, z_threshold: 2.0, horizon: 10, period: test, clean_only: true, direction: corr_to_vix}
+    field: lift
+  - reference: event_study
+    args: {group: risk, window: 21, z_threshold: 2.0, horizon: 10, period: test, clean_only: true, direction: corr_to_vix}
+    field: p_value
