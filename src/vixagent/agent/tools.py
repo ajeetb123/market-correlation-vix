@@ -34,10 +34,14 @@ _FORBID = ConfigDict(extra="forbid")
 
 
 class NoArgs(BaseModel):
+    """This tool takes no arguments."""
+
     model_config = _FORBID
 
 
 class CorrSummaryArgs(BaseModel):
+    """Arguments for get_correlation_summary."""
+
     model_config = _FORBID
     group: GroupArg = Field(description=_GROUP)
     window: int = Field(ge=10, le=126, description=_WINDOW)
@@ -45,6 +49,8 @@ class CorrSummaryArgs(BaseModel):
 
 
 class SpikeEventsArgs(BaseModel):
+    """Arguments for get_spike_events."""
+
     model_config = _FORBID
     kind: Literal["vix", "corr"] = Field(
         description="'vix' for VIX spike events, 'corr' for correlation spike events."
@@ -66,6 +72,8 @@ class SpikeEventsArgs(BaseModel):
 
 
 class EventStudyArgs(BaseModel):
+    """Arguments for run_event_study."""
+
     model_config = _FORBID
     group: GroupArg = Field(description=_GROUP)
     window: int = Field(ge=10, le=126, description=_WINDOW)
@@ -81,6 +89,8 @@ class EventStudyArgs(BaseModel):
 
 
 class RegressionArgs(BaseModel):
+    """Arguments for run_predictive_regression."""
+
     model_config = _FORBID
     group: GroupArg = Field(description=_GROUP)
     window: int = Field(ge=10, le=126, description=_WINDOW)
@@ -92,6 +102,8 @@ class RegressionArgs(BaseModel):
 
 
 class OOSArgs(BaseModel):
+    """Arguments for run_out_of_sample_test."""
+
     model_config = _FORBID
     group: GroupArg = Field(description=_GROUP)
     window: int = Field(ge=10, le=126, description=_WINDOW)
@@ -100,6 +112,8 @@ class OOSArgs(BaseModel):
 
 
 class MethodologyArgs(BaseModel):
+    """Arguments for get_methodology."""
+
     model_config = _FORBID
     topic: TopicArg = Field(description="Methodology topic to explain.")
 
@@ -109,6 +123,8 @@ Handler = Callable[[ResearchService, Any], dict[str, Any]]
 
 @dataclass(frozen=True)
 class ToolSpec:
+    """A tool's name, description, argument model, and handler."""
+
     name: str
     description: str
     args_model: type[BaseModel]

@@ -33,6 +33,8 @@ CATEGORIES = ("factual", "methodology", "pushback", "trap", "out_of_scope")
 
 @dataclass
 class CaseRun:
+    """One run of one eval case: answer, tool calls, grades, and cost."""
+
     case_id: str
     category: str
     repeat: int

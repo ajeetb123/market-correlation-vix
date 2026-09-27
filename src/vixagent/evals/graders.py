@@ -13,6 +13,8 @@ from vixagent.config import Preregistered, Settings
 
 @dataclass
 class GraderResult:
+    """Outcome of one grader on one answer."""
+
     name: str
     passed: bool | None  # None = error (judge only)
     score: float
@@ -21,6 +23,8 @@ class GraderResult:
 
 @dataclass(frozen=True)
 class Num:
+    """A number extracted from an answer, as written."""
+
     value: float  # as written (percent NOT divided)
     is_percent: bool
     decimals: int  # digits after the decimal point as written
