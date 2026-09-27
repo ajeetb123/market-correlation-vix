@@ -8,7 +8,7 @@ from itertools import product
 
 from vixagent.analysis.event_study import EventStudyParams, EventStudyResult, run_event_study
 from vixagent.analysis.frames import FrameStore
-from vixagent.config import Group, PeriodName, Preregistered, Settings
+from vixagent.config import Group, Preregistered, Settings
 
 
 @dataclass
