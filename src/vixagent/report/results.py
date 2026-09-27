@@ -39,7 +39,7 @@ def build_results(store: FrameStore, settings: Settings, prereg: Preregistered) 
     groups = list(settings.universe)
     aligned = {g: store.aligned(g) for g in groups}
 
-    def es(period: PeriodName, direction: Direction) -> EventStudyResult:
+    def _es(period: PeriodName, direction: Direction) -> EventStudyResult:
         params = EventStudyParams(
             p.group, p.window, p.z_threshold, p.horizon, period, p.clean_only, direction
         )
@@ -59,9 +59,9 @@ def build_results(store: FrameStore, settings: Settings, prereg: Preregistered) 
         },
         "preregistered": {
             "spec": p.model_dump(),
-            "train": es("train", p.direction),
-            "test": es("test", p.direction),
-            "reverse_test": es("test", reverse),
+            "train": _es("train", p.direction),
+            "test": _es("test", p.direction),
+            "reverse_test": _es("test", reverse),
         },
         "regression": {
             "base": run_regression(store, settings, p.group, p.window, p.horizon, "full", False),

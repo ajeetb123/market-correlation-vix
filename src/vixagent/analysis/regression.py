@@ -15,6 +15,8 @@ from vixagent.targets import fwd_log_vix_change
 
 @dataclass
 class RegressionResult:
+    """OLS fit summary with HAC t-stats and p-values per coefficient."""
+
     n: int
     r2: float
     hac_maxlags: int

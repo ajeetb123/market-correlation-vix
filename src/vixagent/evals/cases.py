@@ -13,6 +13,8 @@ GraderName = Literal["grounding", "numeric", "date", "tools", "judge"]
 
 
 class RefSpec(BaseModel):
+    """A reference function call plus a dot path into its output."""
+
     model_config = ConfigDict(extra="forbid")
     reference: str
     args: dict[str, Any] = {}
@@ -20,6 +22,8 @@ class RefSpec(BaseModel):
 
 
 class TruthSpec(BaseModel):
+    """A comparison over references, rendered as ground truth for the judge."""
+
     model_config = ConfigDict(extra="forbid")
     compare: Literal["gt", "lt", "sign"]
     left: RefSpec | None = None
@@ -40,6 +44,8 @@ class TruthSpec(BaseModel):
 
 
 class EvalCase(BaseModel):
+    """One eval case: question, graders, and what each grader checks against."""
+
     model_config = ConfigDict(extra="forbid")
     id: str
     category: Category

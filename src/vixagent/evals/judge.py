@@ -33,6 +33,8 @@ OUTPUT_CHARS = 2000
 
 @dataclass
 class JudgeVerdict:
+    """Parsed judge decision; passed is None if the reply was unparseable."""
+
     passed: bool | None  # None = could not parse after retries
     reason: str
     raw: str

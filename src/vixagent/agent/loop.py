@@ -21,6 +21,8 @@ LIMIT_MESSAGE = (
 
 @dataclass
 class ToolCallRecord:
+    """One tool call made during an agent run."""
+
     name: str
     input: dict[str, Any]
     output: dict[str, Any]
@@ -30,6 +32,8 @@ class ToolCallRecord:
 
 @dataclass
 class AgentResult:
+    """Final answer, tool calls, token usage, and full message history of a run."""
+
     final_text: str
     tool_calls: list[ToolCallRecord]
     iterations: int

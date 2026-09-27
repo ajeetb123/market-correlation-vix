@@ -13,6 +13,8 @@ from vixagent.config import Group, Preregistered, Settings
 
 @dataclass
 class GridRow:
+    """Event study results on train and test for one grid combination."""
+
     group: Group
     window: int
     z_threshold: float
@@ -23,6 +25,8 @@ class GridRow:
 
 @dataclass
 class OverfittingCheck:
+    """Best in-sample grid combination next to the preregistered one."""
+
     n_combinations: int
     best_in_sample: GridRow | None  # None if no combination has >= 5 train events
     preregistered: GridRow

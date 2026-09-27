@@ -24,6 +24,8 @@ def find_project_root(start: Path | None = None) -> Path:
 
 
 class DataConfig(BaseModel):
+    """Data source and cache settings."""
+
     start: date
     snapshot_end: date
     vix_ticker: str
@@ -31,30 +33,42 @@ class DataConfig(BaseModel):
 
 
 class PeriodsConfig(BaseModel):
+    """Inclusive train and test date ranges."""
+
     train: tuple[date, date]
     test: tuple[date, date]
 
 
 class FeaturesConfig(BaseModel):
+    """Feature construction settings."""
+
     z_lookback: int = Field(gt=1)
 
 
 class VixSpikeConfig(BaseModel):
+    """VIX spike definition: ratio to prior median, threshold, and cooldown."""
+
     median_lookback: int = Field(gt=0)
     ratio_threshold: float = Field(gt=1.0)
     cooldown: int = Field(ge=0)
 
 
 class CorrSpikeConfig(BaseModel):
+    """Correlation spike declustering settings."""
+
     cooldown: int = Field(ge=0)
 
 
 class EventStudyConfig(BaseModel):
+    """Event study clean-filter window and permutation count."""
+
     clean_pre_window: int = Field(ge=0)
     n_permutations: int = Field(gt=0)
 
 
 class GridConfig(BaseModel):
+    """Parameter values for the exploratory grid."""
+
     windows: list[int]
     horizons: list[int]
     z_thresholds: list[float]
@@ -62,6 +76,8 @@ class GridConfig(BaseModel):
 
 
 class Settings(BaseModel):
+    """Validated contents of config/settings.yaml."""
+
     seed: int
     data: DataConfig
     universe: dict[Group, list[str]]
@@ -130,6 +146,8 @@ class Settings(BaseModel):
 
 
 class PrimarySpec(BaseModel):
+    """The preregistered primary test specification."""
+
     group: Group
     window: int
     z_threshold: float
@@ -140,6 +158,8 @@ class PrimarySpec(BaseModel):
 
 
 class Preregistered(BaseModel):
+    """Validated contents of config/preregistered.yaml."""
+
     primary: PrimarySpec
     note: str
 

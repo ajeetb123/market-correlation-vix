@@ -17,6 +17,8 @@ from vixagent.targets import fwd_log_vix_change
 
 @dataclass
 class OOSResult:
+    """Out-of-sample R squared plus train and test event studies."""
+
     r2_oos: float
     n_train: int
     n_test: int
@@ -63,7 +65,7 @@ def run_oos(
     y_pred = model.predict(sm.add_constant(X[te], has_constant="add"))
     score = r2_oos(y_te.to_numpy(), np.asarray(y_pred), float(y_tr.mean()))
 
-    def es(period: PeriodName) -> EventStudyResult:
+    def _es(period: PeriodName) -> EventStudyResult:
         params = EventStudyParams(group, window, z_threshold, horizon, period, True, "corr_to_vix")
         return run_event_study(store, params, settings)
 
@@ -71,6 +73,6 @@ def run_oos(
         r2_oos=score,
         n_train=int(tr.sum()),
         n_test=int(te.sum()),
-        event_study_train=es("train"),
-        event_study_test=es("test"),
+        event_study_train=_es("train"),
+        event_study_test=_es("test"),
     )

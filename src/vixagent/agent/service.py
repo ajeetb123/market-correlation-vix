@@ -95,7 +95,7 @@ class ResearchService:
     def describe_dataset(self) -> dict[str, Any]:
         """Tickers, date range, trading days, alignment drops, periods, and source."""
 
-        def build() -> dict[str, Any]:
+        def _build() -> dict[str, Any]:
             s = self.settings
             aligned = {g: self.store.aligned(g) for g in s.universe}
             return {
@@ -109,12 +109,12 @@ class ResearchService:
                 "data_source": DATA_SOURCE,
             }
 
-        return self._cached(("describe_dataset",), build)
+        return self._cached(("describe_dataset",), _build)
 
     def correlation_summary(self, group: Group, window: int, period: PeriodName) -> dict[str, Any]:
         """Summary statistics of average correlation over non-NaN days in the period."""
 
-        def build() -> dict[str, Any]:
+        def _build() -> dict[str, Any]:
             f = self.store.frame(group, window)
             in_p = f.loc[period_mask(f.index, self.settings.period(period))]
             c = in_p["avg_corr"].dropna()
@@ -136,7 +136,7 @@ class ResearchService:
                 "latest_z": in_p.loc[latest, "corr_z"],
             }
 
-        return self._cached(("correlation_summary", group, window, period), build)
+        return self._cached(("correlation_summary", group, window, period), _build)
 
     def spike_events(
         self,
@@ -151,7 +151,7 @@ class ResearchService:
         if kind == "corr" and (group is None or window is None or z_threshold is None):
             raise ValueError("kind='corr' requires group, window, and z_threshold")
 
-        def build() -> dict[str, Any]:
+        def _build() -> dict[str, Any]:
             if kind == "vix":
                 f = self.store.frame(group or "risk", window or s.grid.windows[0])
                 events = f["vix_event"]
@@ -186,7 +186,7 @@ class ResearchService:
                 "definition": definition,
             }
 
-        return self._cached(("spike_events", kind, period, group, window, z_threshold), build)
+        return self._cached(("spike_events", kind, period, group, window, z_threshold), _build)
 
     def event_study(
         self,
@@ -221,7 +221,7 @@ class ResearchService:
     def oos(self, group: Group, window: int, horizon: int, z_threshold: float) -> dict[str, Any]:
         """Out-of-sample R squared and train/test event studies (dates capped)."""
 
-        def build() -> dict[str, Any]:
+        def _build() -> dict[str, Any]:
             r = run_oos(self.store, self.settings, group, window, horizon, z_threshold)
             return {
                 "r2_oos": r.r2_oos,
@@ -231,12 +231,12 @@ class ResearchService:
                 "event_study_test": _capped_event_study(r.event_study_test),
             }
 
-        return self._cached(("oos", group, window, horizon, z_threshold), build)
+        return self._cached(("oos", group, window, horizon, z_threshold), _build)
 
     def overfitting_check(self) -> dict[str, Any]:
         """Best in-sample grid combination vs the preregistered spec, train and test lift."""
 
-        def build() -> dict[str, Any]:
+        def _build() -> dict[str, Any]:
             check = overfitting_check(run_grid(self.store, self.settings), self.prereg)
             return {
                 "n_combinations": check.n_combinations,
@@ -244,7 +244,7 @@ class ResearchService:
                 "preregistered": _grid_summary(check.preregistered),
             }
 
-        return self._cached(("overfitting_check",), build)
+        return self._cached(("overfitting_check",), _build)
 
     def preregistered_spec(self) -> dict[str, Any]:
         """The frozen primary specification and its note."""

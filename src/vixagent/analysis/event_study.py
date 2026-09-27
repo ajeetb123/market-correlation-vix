@@ -20,6 +20,8 @@ Direction = Literal["corr_to_vix", "vix_to_corr"]
 
 @dataclass(frozen=True)
 class EventStudyParams:
+    """One event study specification."""
+
     group: Group
     window: int
     z_threshold: float
@@ -31,6 +33,8 @@ class EventStudyParams:
 
 @dataclass
 class EventStudyResult:
+    """Event study outcome: counts, rates, lift, and permutation p-value."""
+
     n_events: int
     n_hits: int
     hit_rate: float  # NaN if n_events == 0
