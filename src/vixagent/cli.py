@@ -37,6 +37,7 @@ from vixagent.evals.judge import calibrate
 from vixagent.evals.runner import run_suite
 from vixagent.report import generate_report
 from vixagent.report.followup import render_followup_md, verdict_sentence
+from vixagent.report.readme import replace_between_markers
 from vixagent.report.results import headline_sentence
 from vixagent.utils.jsonable import to_jsonable
 
@@ -315,4 +316,10 @@ def followup(
     reports.mkdir(exist_ok=True)
     (reports / "followup.json").write_text(json.dumps(results, indent=2, allow_nan=False) + "\n")
     (reports / "followup.md").write_text(render_followup_md(results))
+    readme = root / "README.md"
+    if readme.exists() and "<!-- FOLLOWUP:START -->" in readme.read_text():
+        block = (
+            f"{verdict_sentence(results)}\n\nDetails: [reports/followup.md](reports/followup.md)."
+        )
+        readme.write_text(replace_between_markers(readme.read_text(), "FOLLOWUP", block))
     console.print(verdict_sentence(results))
