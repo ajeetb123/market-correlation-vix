@@ -6,15 +6,20 @@ was locked in before any results existed, and automated checks guard against loo
 
 ## In short
 
-I tested whether assets moving together predicts market fear spikes, using a locked-in test
-and safeguards against lookahead bias. The answer was no: they happen at the same time, not
-one before the other. When the data hinted at a different pattern, I locked that in as a new
-hypothesis and tested it on untouched data from 1999 to 2007. It didn't hold up, and I report
-that too.
+I tested whether sudden spikes in how much assets move together give a short-term warning of
+market fear spikes, using a locked-in test and safeguards against lookahead bias. I found no
+evidence that they do: the big correlation spikes landed on the same days as the fear spikes,
+not before them. When the data hinted at a different pattern, I locked that in as a new
+hypothesis and tested it on untouched 2000 to 2007 data. It pointed the same way but was not
+statistically significant, and I report that too.
 
 ## Background
 
-This extends [a paper I co-authored](https://www.advisorperspectives.com/articles/2025/10/06/what-signals-market-vix-blow-up) about what signals a coming market blowup: in a panic, unrelated assets start moving together because everyone sells out of fear instead of judging each asset individually. A first version of this repo tested that idea on a basket of 10 unrelated large-cap stocks from 2015 onward, using cross-correlation, Granger causality, and a simple event study. It found that correlation and the VIX clearly move together, but not that correlation leads; if anything, the VIX moved slightly first. That version is preserved in the git history.
+This extends [a paper I co-authored](https://www.advisorperspectives.com/articles/2025/10/06/what-signals-market-vix-blow-up) with Derek Horstmeyer and Hugh Holtman. It compared asset correlations in the three months before six major VIX spikes (1998 to 2020) with correlations during them. In the lead-up, correlations between equity styles (large, small, value, growth) ran very high and the gold-equity correlation ran unusually negative, which the paper read as signs of froth. During the spikes, diversification broke down as most correlations rose.
+
+This project asks a narrower, testable version of the early-warning question with continuous daily data: does a sudden jump in average cross-asset correlation warn of a VIX spike within the next few days to weeks? It does not directly test the paper's three-month lead-up signal, which is about the level of equity-equity and gold-equity correlations over months rather than sudden spikes. Its finding that correlation spikes coincide with VIX spikes is consistent with the paper's observation that diversification breaks down during the spike itself.
+
+A first version of this repo tested that idea on a basket of 10 unrelated large-cap stocks from 2015 onward, using cross-correlation, Granger causality, and a simple event study. It found that correlation and the VIX clearly move together, but not that correlation leads; if anything, the VIX moved slightly first. That version is preserved in the git history.
 
 This version rebuilds the test to address that version's weaknesses: a cross-asset ETF universe (equities, high yield, Treasuries, investment-grade credit, gold) back to 2007, a preregistered primary test, declustered events, permutation p-values, a train/test split, and automated checks against lookahead bias.
 
@@ -36,7 +41,8 @@ Full tables: [reports/results.md](reports/results.md).
 The original test found a hint of the reverse pattern: high correlation was followed by the VIX
 *falling*, even after accounting for the VIX's own recent move. Because that idea came from the
 same data, it was preregistered as a new hypothesis (git tag `followup-prereg-freeze`) and tested
-once on data the project had never analyzed: nine US sector ETFs from 1998 to 2007.
+once on data the project had never analyzed: nine US sector ETFs, January 2000 to April 2007
+(the data starts in December 1998; the first year only builds the baselines).
 
 <!-- FOLLOWUP:START -->
 Follow-up test (sector ETFs, 21-day window, 10-day horizon, with VIX momentum and level controls): on the untouched 1998-12-22 to 2007-04-30 holdout, the coefficient on the correlation z-score was -0.0078 (HAC t = -1.26, one-sided p = 0.1038, n = 1816). Not supported at alpha = 0.05.
@@ -90,6 +96,8 @@ The repo also contains a research agent: Claude answering questions about the st
 - The VIX spike threshold (ratio >= 1.30 vs the prior 20-day median) is a modeling choice.
 - 24 grid combinations were tested, so exploratory results face multiple-testing risk.
 - Correlation spikes and VIX spikes can share a common cause; a lead is not causation.
+- This tests a short-horizon spike signal. The paper's three-month lead-up signal (high
+  equity-equity and negative gold-equity correlation levels) is not tested here.
 - Results are not a trading strategy and are not investment advice.
 
 ## Repository map
