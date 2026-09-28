@@ -14,8 +14,8 @@ No test touches the network or needs an API key. Every loop test uses a scripted
 
 ## Deviations and notes
 
-- **One commit for two steps.** The service and methodology text went in together (`6630ed0`) because the service's `methodology()` method depends on the text module.
-- **The static no-lookahead test caught a real problem.** The `lookahead` methodology prose originally contained the literal characters `shift(-` inside a sentence *about* the lookahead test. The Phase 1 grep test flagged it. The fix was to reword the prose (`dc8d7b7`), not to loosen the test.
+- **One commit for two steps.** The service and methodology text went in together (`90329e2`) because the service's `methodology()` method depends on the text module.
+- **The static no-lookahead test caught a real problem.** The `lookahead` methodology prose originally contained the literal characters `shift(-` inside a sentence *about* the lookahead test. The Phase 1 grep test flagged it. The fix was to reword the prose (`de2776d`), not to loosen the test.
 - **`TopicArg` duplicates the topic list.** It is a `Literal` type listing the same topics as `methodology.TOPICS`, and `test_topic_enum_matches_methodology` keeps the two identical.
 - **Extra field descriptions.** `SpikeEventsArgs` gives every field a `description`. The step's sketch left `kind` and `period` without one, but its instructions say every field should have one.
 - **Transcript filename collisions.** If two runs start in the same second with the same question slug, `TranscriptWriter` appends `-2`, `-3`, and so on.
