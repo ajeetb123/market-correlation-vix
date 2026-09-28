@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import anthropic
+import pandas as pd
 import typer
 from dotenv import load_dotenv
 from rich.console import Console
@@ -21,10 +22,19 @@ from vixagent.agent.service import ResearchService
 from vixagent.agent.transcript import TranscriptWriter
 from vixagent.analysis.followup import FollowupResult, run_followup
 from vixagent.analysis.frames import FrameStore
+from vixagent.analysis.paper import (
+    align_event_dates,
+    leadup_equity_corr,
+    leadup_gold_equity_corr,
+    leadup_test,
+    vix_doubling_events,
+)
 from vixagent.config import (
     find_project_root,
     load_followup,
     load_followup_prereg,
+    load_paper,
+    load_paper_prereg,
     load_preregistered,
     load_settings,
 )
@@ -35,8 +45,10 @@ from vixagent.data.validate import validate_prices
 from vixagent.evals.cases import load_cases
 from vixagent.evals.judge import calibrate
 from vixagent.evals.runner import run_suite
+from vixagent.features.returns import log_returns
 from vixagent.report import generate_report
 from vixagent.report.followup import render_followup_md, verdict_sentence
+from vixagent.report.paper import primary_verdicts, render_paper_md
 from vixagent.report.readme import replace_between_markers
 from vixagent.report.results import headline_sentence
 from vixagent.utils.jsonable import to_jsonable
@@ -323,3 +335,100 @@ def followup(
         )
         readme.write_text(replace_between_markers(readme.read_text(), "FOLLOWUP", block))
     console.print(verdict_sentence(results))
+
+
+@app.command()
+def paper() -> None:
+    """Test the paper's lead-up claim on VIX-doubling events (needs the frozen prereg)."""
+    load_dotenv()
+    try:
+        prereg = load_paper_prereg()
+    except FileNotFoundError as exc:
+        console.print(
+            "[red]No config/preregistered_paper.yaml. Freeze the replication "
+            "preregistration before computing any lead-up correlations.[/red]"
+        )
+        raise typer.Exit(code=1) from exc
+    base = load_settings()
+    settings, cfg = load_paper(base)
+    root = find_project_root()
+    try:
+        prices = load_or_fetch(settings)
+    except DataError as exc:
+        console.print(f"[red]Data error: {exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    vix_t = settings.data.vix_ticker
+    styles = list(cfg.equity_styles)
+
+    eq = prices[[*styles, vix_t]].dropna()
+    eq_ret = log_returns(eq[styles])
+    events_all = vix_doubling_events(eq[vix_t], prereg.lookback, prereg.multiple, prereg.cooldown)
+    event_dates = eq_ret.index[events_all.loc[eq_ret.index].to_numpy(dtype=bool)]
+    eq_stat = leadup_equity_corr(eq_ret, prereg.window)
+
+    gd = prices[[*styles, cfg.gold]].dropna()
+    gd_ret = log_returns(gd)
+    gold_stat = leadup_gold_equity_corr(gd_ret[styles], gd_ret[cfg.gold], prereg.window)
+
+    is_paper = [d.year in prereg.paper_years for d in event_dates]
+    sets = {
+        "new": event_dates[[not x for x in is_paper]],
+        "paper": event_dates[is_paper],
+        "all": event_dates,
+    }
+    order = ["new", "paper", "all"]
+    tests = []
+    for measure, stat, direction in (
+        ("equity_styles", eq_stat, "high"),
+        ("gold_equity", gold_stat, "low"),
+    ):
+        for name in order:
+            tests.append(
+                leadup_test(
+                    stat,
+                    align_event_dates(sets[name], stat.index),
+                    direction,  # type: ignore[arg-type]
+                    prereg.n_permutations,
+                    settings.seed,
+                    prereg.window,
+                    measure,
+                    name,
+                )
+            )
+
+    def value_at(stat: pd.Series, d: pd.Timestamp) -> float | None:
+        pos = stat.index.searchsorted(d)
+        return None if pos >= len(stat) else stat.iloc[pos]
+
+    events = [
+        {
+            "date": d,
+            "set": "paper" if p else "new",
+            "equity_styles": value_at(eq_stat, d),
+            "gold_equity": value_at(gold_stat, d),
+        }
+        for d, p in zip(event_dates, is_paper, strict=True)
+    ]
+    results = to_jsonable(
+        {
+            "equity_styles": styles,
+            "gold": cfg.gold,
+            "preregistered": prereg.model_dump(),
+            "tests": tests,
+            "events": events,
+            "data_snapshot_end": settings.data.snapshot_end,
+        }
+    )
+    reports = root / "reports"
+    reports.mkdir(exist_ok=True)
+    (reports / "paper_replication.json").write_text(
+        json.dumps(results, indent=2, allow_nan=False) + "\n"
+    )
+    (reports / "paper_replication.md").write_text(render_paper_md(results))
+    readme = root / "README.md"
+    if readme.exists() and "<!-- PAPER:START -->" in readme.read_text():
+        block = "\n\n".join(primary_verdicts(results))
+        block += "\n\nDetails: [reports/paper_replication.md](reports/paper_replication.md)."
+        readme.write_text(replace_between_markers(readme.read_text(), "PAPER", block))
+    for line in primary_verdicts(results):
+        console.print(line)

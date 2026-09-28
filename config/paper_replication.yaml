@@ -1,0 +1,13 @@
+# Replication of the paper's lead-up claim (see README, "Testing the paper's claim").
+# Long-history proxies for the paper's equity styles, via Vanguard index mutual funds:
+#   large = VFINX (500 Index), small = NAESX (Small-Cap Index),
+#   value = VIVAX (Value Index), growth = VIGRX (Growth Index); all daily from 1992-10-30.
+# Gold = GC=F (COMEX front-month gold futures), daily from 2000-08-30.
+equity_styles: [VFINX, NAESX, VIVAX, VIGRX]
+gold: "GC=F"
+
+data:
+  start: "1990-01-02"
+  snapshot_end: "2026-06-30"
+  vix_ticker: "^VIX"
+  cache_path: "data/raw/paper_prices.parquet"
