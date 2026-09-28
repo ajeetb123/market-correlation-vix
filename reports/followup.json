@@ -1,0 +1,125 @@
+{
+  "universe": [
+    "XLB",
+    "XLE",
+    "XLF",
+    "XLI",
+    "XLK",
+    "XLP",
+    "XLU",
+    "XLV",
+    "XLY"
+  ],
+  "preregistered": {
+    "hypothesis": "When the average pairwise correlation of the nine sector ETFs is unusually high (its trailing 252-day z-score over a 21-day window), the VIX falls more over the next 10 trading days than its own 5-day momentum and log level predict. Formally: in the regression of the forward 10-day log VIX change on the correlation z-score, 5-day VIX momentum, and log VIX, the coefficient on the z-score is negative.\n",
+    "primary": {
+      "window": 21,
+      "horizon": 10,
+      "include_controls": true,
+      "alpha": 0.05
+    },
+    "note": "Formed after the original study found a negative z coefficient on 2007-2026 data, and after an exploration run confirmed the same sign for sector ETFs on 2007-2026. Fixed before any 1998-12-22 to 2007-04-30 data was analyzed. Test: one-sided Newey-West (HAC, maxlags = horizon) t-test on the z coefficient over eligible holdout days. Only the holdout result is confirmatory; the window and horizon match the original preregistered spec rather than the best exploration result.\n"
+  },
+  "holdout_primary": {
+    "period": [
+      "1998-12-22",
+      "2007-04-30"
+    ],
+    "include_controls": true,
+    "regression": {
+      "n": 1816,
+      "r2": 0.07252385182819832,
+      "hac_maxlags": 10,
+      "coefs": {
+        "const": {
+          "coef": 0.1351869323621933,
+          "t_hac": 2.067856833182501,
+          "p_hac": 0.038653487578982515
+        },
+        "z": {
+          "coef": -0.007756395274017765,
+          "t_hac": -1.2602668600063764,
+          "p_hac": 0.20757311072709084
+        },
+        "vix_mom_5d": {
+          "coef": -0.23580646737588495,
+          "t_hac": -5.524715435778037,
+          "p_hac": 3.300200605643956e-08
+        },
+        "log_vix": {
+          "coef": -0.047585281136863396,
+          "t_hac": -2.131454205965131,
+          "p_hac": 0.033051741275990885
+        }
+      }
+    },
+    "coef_z": -0.007756395274017765,
+    "t_hac_z": -1.2602668600063764,
+    "p_one_sided": 0.10378655536354542
+  },
+  "holdout_secondary": {
+    "period": [
+      "1998-12-22",
+      "2007-04-30"
+    ],
+    "include_controls": false,
+    "regression": {
+      "n": 1816,
+      "r2": 0.01418841407160798,
+      "hac_maxlags": 10,
+      "coefs": {
+        "const": {
+          "coef": -0.00300716900460976,
+          "t_hac": -0.41946404681843513,
+          "p_hac": 0.6748770251305285
+        },
+        "z": {
+          "coef": -0.012756558781265923,
+          "t_hac": -2.2401752529636227,
+          "p_hac": 0.025079547589367576
+        }
+      }
+    },
+    "coef_z": -0.012756558781265923,
+    "t_hac_z": -2.2401752529636227,
+    "p_one_sided": 0.012539773794683788
+  },
+  "exploration_same_spec": {
+    "period": [
+      "2007-05-01",
+      "2026-06-30"
+    ],
+    "include_controls": true,
+    "regression": {
+      "n": 4812,
+      "r2": 0.10233648551217978,
+      "hac_maxlags": 10,
+      "coefs": {
+        "const": {
+          "coef": 0.29866593412361686,
+          "t_hac": 4.954066293127666,
+          "p_hac": 7.267842694608528e-07
+        },
+        "z": {
+          "coef": -0.020546438699253978,
+          "t_hac": -3.229748799767067,
+          "p_hac": 0.0012389902608165105
+        },
+        "vix_mom_5d": {
+          "coef": -0.18393230000211455,
+          "t_hac": -3.9728125980873594,
+          "p_hac": 7.10289303380137e-05
+        },
+        "log_vix": {
+          "coef": -0.10260732670590737,
+          "t_hac": -5.011196513267137,
+          "p_hac": 5.409264020393917e-07
+        }
+      }
+    },
+    "coef_z": -0.020546438699253978,
+    "t_hac_z": -3.229748799767067,
+    "p_one_sided": 0.0006194951304082552
+  },
+  "data_snapshot_end": "2026-06-30"
+}
