@@ -179,7 +179,7 @@ Do this once before Phase 0.
    - You'll paste it into `.env` in Phase 3. Never commit it, never paste it into chat.
    - Rough cost: Phases 3 and 4 use a few dollars total with a Sonnet-class model if you iterate with `--repeats 1`.
 
-5. **Coding agent**: Coding agents read `AGENTS.md`.
+5. **Coding agent**: the operating rules live in `AGENTS.md` at the repo root. Point your coding agent at it at the start of every session.
 
 ---
 
