@@ -4,7 +4,7 @@ Put this file at `docs/PLAN.md`. Section numbers refer to `docs/SPEC.md`.
 
 This is the overview. The detailed procedure for each phase (files, signatures, algorithms, tests, verify commands, commit messages) is in `docs/steps/phase-N-*.md`. Where a step file is more specific than the task list below, follow the step file.
 
-Each phase ends with: Definition of Done passing (CLAUDE.md), a walkthrough in `docs/walkthroughs/phase-N.md`, and a **STOP** for the human. The human answers the Checkpoint Questions in their own words before approving the next phase. If the human can't answer one, the agent explains that part again before moving on.
+Each phase ends with: Definition of Done passing (AGENTS.md), a walkthrough in `docs/walkthroughs/phase-N.md`, and a **STOP** for the human. The human answers the Checkpoint Questions in their own words before approving the next phase. If the human can't answer one, the agent explains that part again before moving on.
 
 ---
 
@@ -13,7 +13,7 @@ Each phase ends with: Definition of Done passing (CLAUDE.md), a walkthrough in `
 **Tasks**
 1. `git init`, create the layout in SPEC section 2 (empty modules with docstrings are fine).
 2. `pyproject.toml` per SPEC section 3.
-3. `.gitignore` per CLAUDE.md; `.env.example` per SPEC section 3.
+3. `.gitignore` per AGENTS.md; `.env.example` per SPEC section 3.
 4. `config/settings.yaml` and `config/preregistered.yaml` exactly as in SPEC section 3.
 5. `config.py`: pydantic models + loader + validation rules from SPEC section 3.
 6. `utils/jsonable.py`: `to_jsonable(obj)` recursively converts numpy scalars/arrays, `pd.Timestamp` (to `YYYY-MM-DD`), `NaN`/`inf` (to `None`), dataclasses, tuples, and dicts.

@@ -179,7 +179,7 @@ Do this once before Phase 0.
    - You'll paste it into `.env` in Phase 3. Never commit it, never paste it into chat.
    - Rough cost: Phases 3 and 4 use a few dollars total with a Sonnet-class model if you iterate with `--repeats 1`.
 
-5. **Coding agent**: Claude Code works directly with `CLAUDE.md`. Other agents usually read `AGENTS.md` (copy the file).
+5. **Coding agent**: the operating rules live in `AGENTS.md` at the repo root. Point your coding agent at it at the start of every session.
 
 ---
 
@@ -187,7 +187,7 @@ Do this once before Phase 0.
 
 For each phase:
 1. Start a fresh agent session in the repo.
-2. Prompt: `Read CLAUDE.md, then docs/steps/phase-N-*.md. Execute Phase N step by step. Stop at the end of the phase.`
+2. Prompt: `Read AGENTS.md, then docs/steps/phase-N-*.md. Execute Phase N step by step. Stop at the end of the phase.`
 3. Watch the task list. When a step's **Verify** fails, the agent must fix it before moving on.
 4. When it stops, read `docs/walkthroughs/phase-N.md`, then answer the Checkpoint Questions **in your own words** in `docs/walkthroughs/phase-N-answers.md`.
 5. If you can't answer one, ask the agent to explain that part again. Don't move on until you can.

@@ -2,7 +2,7 @@
 
 Goal: download and cache prices, build every backward-looking feature, detect spikes and events, define eligible days, and **prove** there is no lookahead. End by freezing the preregistration.
 
-Read first: `CLAUDE.md`, `docs/SPEC.md` sections 4 to 8.1, 12, 15.
+Read first: `AGENTS.md`, `docs/SPEC.md` sections 4 to 8.1, 12, 15.
 
 Module map for this phase:
 ```

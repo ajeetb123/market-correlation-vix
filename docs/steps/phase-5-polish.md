@@ -2,7 +2,7 @@
 
 Goal: a repo a recruiter can understand in 60 seconds and an engineer can run in 5 minutes.
 
-Read first: `CLAUDE.md`, `docs/SPEC.md` section 14.
+Read first: `AGENTS.md`, `docs/SPEC.md` section 14.
 
 ---
 

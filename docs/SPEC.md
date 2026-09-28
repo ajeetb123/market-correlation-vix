@@ -29,7 +29,7 @@ A null result is an acceptable, publishable outcome. The project's value is the 
 
 ```
 vix-research-agent/
-├── CLAUDE.md
+├── AGENTS.md
 ├── README.md
 ├── pyproject.toml
 ├── .gitignore

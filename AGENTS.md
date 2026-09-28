@@ -1,7 +1,6 @@
-# CLAUDE.md: Operating Rules for vix-research-agent
+# AGENTS.md: Operating Rules for vix-research-agent
 
 Read this file completely before doing anything. Then read `docs/SPEC.md`, `docs/PLAN.md`, `docs/EVALS.md`, and the step file for the current phase in `docs/steps/`.
-If your tool reads `AGENTS.md` instead of `CLAUDE.md`, copy this file to `AGENTS.md`.
 
 The step file is the exact procedure: follow its steps in order, run every **Verify**, and use its **Commit** messages. If a step file and SPEC disagree, SPEC wins: stop and ask the human.
 

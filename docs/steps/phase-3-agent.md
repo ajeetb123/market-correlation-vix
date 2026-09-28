@@ -2,7 +2,7 @@
 
 Goal: wrap the pipeline in a cached service, expose it as 9 validated tools, implement the tool-use loop with transcripts, and ship `vixagent ask` and `vixagent chat`.
 
-Read first: `CLAUDE.md`, `docs/SPEC.md` section 10 and 11, `docs/00-FOUNDATION.md` Part D.
+Read first: `AGENTS.md`, `docs/SPEC.md` section 10 and 11, `docs/00-FOUNDATION.md` Part D.
 
 Module map:
 ```

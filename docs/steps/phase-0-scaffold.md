@@ -2,7 +2,7 @@
 
 Goal: an installable, linted, type-checked, tested, CI-green empty project with config loading and JSON safety in place.
 
-Read first: `CLAUDE.md`, `docs/SPEC.md` sections 2, 3, 13.
+Read first: `AGENTS.md`, `docs/SPEC.md` sections 2, 3, 13.
 
 Every step ends with **Verify** (a command and its expected result) and **Commit** (the exact message). Do not proceed past a failing Verify.
 
@@ -36,7 +36,7 @@ tests/fixtures/__init__.py
 
 Add `.gitkeep` to `evals/cases`, `reports/figures`, `docs/walkthroughs`.
 
-Copy `CLAUDE.md` to the repo root and `SPEC.md`, `PLAN.md`, `EVALS.md`, `00-FOUNDATION.md`, `README.md` (docs index), and `steps/*.md` into `docs/`.
+Copy `AGENTS.md` to the repo root and `SPEC.md`, `PLAN.md`, `EVALS.md`, `00-FOUNDATION.md`, `README.md` (docs index), and `steps/*.md` into `docs/`.
 
 **Verify**: `find . -name "__init__.py" | wc -l` prints `10`.
 **Commit**: none yet (commit after Step 0.3).
@@ -478,7 +478,7 @@ gh repo create vix-research-agent --public --source=. --remote=origin --push
 
 ## Step 0.12: Walkthrough and stop
 
-Write `docs/walkthroughs/phase-0.md` per the CLAUDE.md format, covering `config.py`, `utils/jsonable.py`, `cli.py`, `pyproject.toml`, and `ci.yml`. Include a worked trace of `to_jsonable({"x": np.float64(float("nan")), "d": pd.Timestamp("2020-03-16")})`.
+Write `docs/walkthroughs/phase-0.md` per the AGENTS.md format, covering `config.py`, `utils/jsonable.py`, `cli.py`, `pyproject.toml`, and `ci.yml`. Include a worked trace of `to_jsonable({"x": np.float64(float("nan")), "d": pd.Timestamp("2020-03-16")})`.
 
 Append the Phase 0 Checkpoint Questions from `docs/PLAN.md`.
 

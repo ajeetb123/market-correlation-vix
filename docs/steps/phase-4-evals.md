@@ -2,7 +2,7 @@
 
 Goal: a scored, repeatable measurement of the agent: 24 cases, deterministic graders, a calibrated LLM judge, a runner, and a committed summary.
 
-Read first: `CLAUDE.md`, `docs/EVALS.md` (the full design), `docs/00-FOUNDATION.md` Part E.
+Read first: `AGENTS.md`, `docs/EVALS.md` (the full design), `docs/00-FOUNDATION.md` Part E.
 
 Module map:
 ```
