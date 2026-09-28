@@ -1,0 +1,18 @@
+hypothesis: >
+  When the average pairwise correlation of the nine sector ETFs is unusually high
+  (its trailing 252-day z-score over a 21-day window), the VIX falls more over the
+  next 10 trading days than its own 5-day momentum and log level predict. Formally:
+  in the regression of the forward 10-day log VIX change on the correlation z-score,
+  5-day VIX momentum, and log VIX, the coefficient on the z-score is negative.
+primary:
+  window: 21
+  horizon: 10
+  include_controls: true
+  alpha: 0.05
+note: >
+  Formed after the original study found a negative z coefficient on 2007-2026 data,
+  and after an exploration run confirmed the same sign for sector ETFs on 2007-2026.
+  Fixed before any 1998-12-22 to 2007-04-30 data was analyzed. Test: one-sided
+  Newey-West (HAC, maxlags = horizon) t-test on the z coefficient over eligible
+  holdout days. Only the holdout result is confirmatory; the window and horizon match
+  the original preregistered spec rather than the best exploration result.
