@@ -4,6 +4,12 @@ Do spikes in cross-asset correlation lead spikes in the VIX? A preregistered tes
 2007 to 2026 market data, plus an LLM research agent that can only answer by calling
 the tested pipeline, measured by a 24-case eval harness.
 
+## Background
+
+This extends [a paper I co-authored](https://www.advisorperspectives.com/articles/2025/10/06/what-signals-market-vix-blow-up) about what signals a coming market blowup: in a panic, unrelated assets start moving together because everyone sells out of fear instead of judging each asset individually. A first version of this repo tested that idea on a basket of 10 unrelated large-cap stocks from 2015 onward, using cross-correlation, Granger causality, and a simple event study. It found that correlation and the VIX clearly move together, but not that correlation leads; if anything, the VIX moved slightly first. That version is preserved in the git history.
+
+This version rebuilds the test to address that version's weaknesses: a cross-asset ETF universe (equities, high yield, Treasuries, investment-grade credit, gold) back to 2007, a preregistered primary test, declustered events, permutation p-values, a train/test split, and automated checks against lookahead bias.
+
 ![VIX and average correlation](reports/figures/timeseries.png)
 
 ## Result
