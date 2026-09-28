@@ -1,0 +1,1604 @@
+{
+  "dataset": {
+    "tickers": {
+      "risk": [
+        "SPY",
+        "QQQ",
+        "IWM",
+        "EFA",
+        "EEM",
+        "HYG"
+      ],
+      "all": [
+        "SPY",
+        "QQQ",
+        "IWM",
+        "EFA",
+        "EEM",
+        "HYG",
+        "TLT",
+        "IEF",
+        "LQD",
+        "GLD"
+      ]
+    },
+    "vix_ticker": "^VIX",
+    "start": "2007-05-01",
+    "end": "2026-06-30",
+    "n_trading_days": {
+      "risk": 4822,
+      "all": 4822
+    },
+    "rows_dropped": {
+      "risk": 1,
+      "all": 1
+    },
+    "periods": {
+      "train": [
+        "2007-05-01",
+        "2018-12-31"
+      ],
+      "test": [
+        "2019-01-01",
+        "2026-06-30"
+      ],
+      "full": [
+        "2007-05-01",
+        "2026-06-30"
+      ]
+    }
+  },
+  "preregistered": {
+    "spec": {
+      "group": "risk",
+      "window": 21,
+      "z_threshold": 2.0,
+      "horizon": 10,
+      "clean_only": true,
+      "direction": "corr_to_vix",
+      "alpha": 0.05
+    },
+    "train": {
+      "n_events": 0,
+      "n_hits": 0,
+      "hit_rate": null,
+      "base_rate": 0.14217182730047973,
+      "lift": null,
+      "p_value": null,
+      "n_permutations": 5000,
+      "event_dates": [],
+      "hit_flags": [],
+      "warning": "insufficient events (<5)"
+    },
+    "test": {
+      "n_events": 2,
+      "n_hits": 0,
+      "hit_rate": 0.0,
+      "base_rate": 0.18834080717488788,
+      "lift": 0.0,
+      "p_value": 1.0,
+      "n_permutations": 5000,
+      "event_dates": [
+        "2024-05-20",
+        "2026-04-08"
+      ],
+      "hit_flags": [
+        false,
+        false
+      ],
+      "warning": "insufficient events (<5)"
+    },
+    "reverse_test": {
+      "n_events": 24,
+      "n_hits": 0,
+      "hit_rate": 0.0,
+      "base_rate": 0.021750951604132682,
+      "lift": 0.0,
+      "p_value": 1.0,
+      "n_permutations": 5000,
+      "event_dates": [
+        "2019-05-07",
+        "2019-08-01",
+        "2019-10-02",
+        "2020-01-27",
+        "2020-06-11",
+        "2020-09-03",
+        "2020-10-28",
+        "2021-01-27",
+        "2021-05-12",
+        "2021-07-19",
+        "2021-09-20",
+        "2021-11-26",
+        "2022-01-20",
+        "2022-03-01",
+        "2022-04-22",
+        "2023-09-26",
+        "2024-04-15",
+        "2024-07-19",
+        "2024-10-07",
+        "2024-12-18",
+        "2025-02-27",
+        "2025-10-10",
+        "2025-11-18",
+        "2026-01-20"
+      ],
+      "hit_flags": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "warning": null
+    }
+  },
+  "regression": {
+    "base": {
+      "n": 4539,
+      "r2": 0.02597074357952389,
+      "hac_maxlags": 10,
+      "coefs": {
+        "const": {
+          "coef": -0.0004518030053442472,
+          "t_hac": -0.06581339127525208,
+          "p_hac": 0.9475263946562164
+        },
+        "z": {
+          "coef": -0.027864729515769886,
+          "t_hac": -4.591586169422823,
+          "p_hac": 4.3988994989826785e-06
+        }
+      }
+    },
+    "controls": {
+      "n": 4539,
+      "r2": 0.09649106135820085,
+      "hac_maxlags": 10,
+      "coefs": {
+        "const": {
+          "coef": 0.3287017817623194,
+          "t_hac": 5.399496267137705,
+          "p_hac": 6.682827453529466e-08
+        },
+        "z": {
+          "coef": -0.013933793092081707,
+          "t_hac": -2.104725336336881,
+          "p_hac": 0.03531522369968082
+        },
+        "vix_mom_5d": {
+          "coef": -0.18255404301674405,
+          "t_hac": -3.9035006019023366,
+          "p_hac": 9.481131437623901e-05
+        },
+        "log_vix": {
+          "coef": -0.11292668007044045,
+          "t_hac": -5.434436112965221,
+          "p_hac": 5.49699872452043e-08
+        }
+      }
+    }
+  },
+  "oos": {
+    "r2_oos": 0.02103788843520571,
+    "n_train": 2656,
+    "n_test": 1873,
+    "event_study_train": {
+      "n_events": 0,
+      "n_hits": 0,
+      "hit_rate": null,
+      "base_rate": 0.14217182730047973,
+      "lift": null,
+      "p_value": null,
+      "n_permutations": 5000,
+      "event_dates": [],
+      "hit_flags": [],
+      "warning": "insufficient events (<5)"
+    },
+    "event_study_test": {
+      "n_events": 2,
+      "n_hits": 0,
+      "hit_rate": 0.0,
+      "base_rate": 0.18834080717488788,
+      "lift": 0.0,
+      "p_value": 1.0,
+      "n_permutations": 5000,
+      "event_dates": [
+        "2024-05-20",
+        "2026-04-08"
+      ],
+      "hit_flags": [
+        false,
+        false
+      ],
+      "warning": "insufficient events (<5)"
+    }
+  },
+  "overfitting_check": {
+    "n_combinations": 24,
+    "best_in_sample": {
+      "group": "all",
+      "window": 63,
+      "z_threshold": 1.5,
+      "horizon": 10,
+      "train": {
+        "n_events": 5,
+        "n_hits": 2,
+        "hit_rate": 0.4,
+        "base_rate": 0.14482452243447358,
+        "lift": 2.761963190184049,
+        "p_value": 0.05638872225554889,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2010-11-29",
+          "2012-01-26",
+          "2012-03-28",
+          "2013-05-31",
+          "2015-03-23"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          true,
+          true,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 3,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.18834080717488788,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-07-05",
+          "2020-10-08",
+          "2022-06-08"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    "preregistered": {
+      "group": "risk",
+      "window": 21,
+      "z_threshold": 2.0,
+      "horizon": 10,
+      "train": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.14217182730047973,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 2,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.18834080717488788,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2024-05-20",
+          "2026-04-08"
+        ],
+        "hit_flags": [
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    }
+  },
+  "grid": [
+    {
+      "group": "risk",
+      "window": 21,
+      "z_threshold": 1.5,
+      "horizon": 5,
+      "train": {
+        "n_events": 1,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.07186411149825785,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2008-12-02"
+        ],
+        "hit_flags": [
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 7,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.09578544061302682,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2022-03-25",
+          "2022-06-24",
+          "2022-09-14",
+          "2022-12-06",
+          "2024-05-02",
+          "2026-03-31",
+          "2026-06-11"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      }
+    },
+    {
+      "group": "risk",
+      "window": 21,
+      "z_threshold": 1.5,
+      "horizon": 10,
+      "train": {
+        "n_events": 1,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.14217182730047973,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2008-12-02"
+        ],
+        "hit_flags": [
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 7,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.18834080717488788,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2022-03-25",
+          "2022-06-24",
+          "2022-09-14",
+          "2022-12-06",
+          "2024-05-02",
+          "2026-03-31",
+          "2026-06-11"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      }
+    },
+    {
+      "group": "risk",
+      "window": 21,
+      "z_threshold": 1.5,
+      "horizon": 20,
+      "train": {
+        "n_events": 1,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.27025843188786686,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2008-12-02"
+        ],
+        "hit_flags": [
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 6,
+        "n_hits": 1,
+        "hit_rate": 0.16666666666666666,
+        "base_rate": 0.34107027724049,
+        "lift": 0.4886578449905482,
+        "p_value": 0.9024195160967806,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2022-03-25",
+          "2022-06-24",
+          "2022-09-14",
+          "2022-12-06",
+          "2024-05-02",
+          "2026-03-31"
+        ],
+        "hit_flags": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      }
+    },
+    {
+      "group": "risk",
+      "window": 21,
+      "z_threshold": 2.0,
+      "horizon": 5,
+      "train": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.07186411149825785,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 2,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.09578544061302682,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2024-05-20",
+          "2026-04-08"
+        ],
+        "hit_flags": [
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "risk",
+      "window": 21,
+      "z_threshold": 2.0,
+      "horizon": 10,
+      "train": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.14217182730047973,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 2,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.18834080717488788,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2024-05-20",
+          "2026-04-08"
+        ],
+        "hit_flags": [
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "risk",
+      "window": 21,
+      "z_threshold": 2.0,
+      "horizon": 20,
+      "train": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.27025843188786686,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 2,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.34107027724049,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2024-05-20",
+          "2026-04-08"
+        ],
+        "hit_flags": [
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "risk",
+      "window": 63,
+      "z_threshold": 1.5,
+      "horizon": 5,
+      "train": {
+        "n_events": 1,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.07320319432120674,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2009-04-06"
+        ],
+        "hit_flags": [
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 3,
+        "n_hits": 2,
+        "hit_rate": 0.6666666666666666,
+        "base_rate": 0.09578544061302682,
+        "lift": 6.959999999999999,
+        "p_value": 0.0027994401119776045,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2022-01-18",
+          "2024-09-03",
+          "2026-05-28"
+        ],
+        "hit_flags": [
+          true,
+          true,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "risk",
+      "window": 63,
+      "z_threshold": 1.5,
+      "horizon": 10,
+      "train": {
+        "n_events": 1,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.14482452243447358,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2009-04-06"
+        ],
+        "hit_flags": [
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 3,
+        "n_hits": 2,
+        "hit_rate": 0.6666666666666666,
+        "base_rate": 0.18834080717488788,
+        "lift": 3.5396825396825395,
+        "p_value": 0.01279744051189762,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2022-01-18",
+          "2024-09-03",
+          "2026-05-28"
+        ],
+        "hit_flags": [
+          true,
+          true,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "risk",
+      "window": 63,
+      "z_threshold": 1.5,
+      "horizon": 20,
+      "train": {
+        "n_events": 1,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.27532351628737173,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2009-04-06"
+        ],
+        "hit_flags": [
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 3,
+        "n_hits": 2,
+        "hit_rate": 0.6666666666666666,
+        "base_rate": 0.34107027724049,
+        "lift": 1.9546313799621928,
+        "p_value": 0.08318336332733453,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2022-01-18",
+          "2024-09-03",
+          "2026-05-28"
+        ],
+        "hit_flags": [
+          true,
+          true,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "risk",
+      "window": 63,
+      "z_threshold": 2.0,
+      "horizon": 5,
+      "train": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.07320319432120674,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.09578544061302682,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "risk",
+      "window": 63,
+      "z_threshold": 2.0,
+      "horizon": 10,
+      "train": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.14482452243447358,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.18834080717488788,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "risk",
+      "window": 63,
+      "z_threshold": 2.0,
+      "horizon": 20,
+      "train": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.27532351628737173,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      },
+      "test": {
+        "n_events": 0,
+        "n_hits": 0,
+        "hit_rate": null,
+        "base_rate": 0.34107027724049,
+        "lift": null,
+        "p_value": null,
+        "n_permutations": 5000,
+        "event_dates": [],
+        "hit_flags": [],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "all",
+      "window": 21,
+      "z_threshold": 1.5,
+      "horizon": 5,
+      "train": {
+        "n_events": 17,
+        "n_hits": 2,
+        "hit_rate": 0.11764705882352941,
+        "base_rate": 0.07186411149825785,
+        "lift": 1.6370766488413546,
+        "p_value": 0.2803439312137572,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2009-03-18",
+          "2009-10-07",
+          "2009-12-03",
+          "2010-03-24",
+          "2010-10-27",
+          "2011-11-30",
+          "2012-03-14",
+          "2012-12-10",
+          "2013-05-31",
+          "2013-09-19",
+          "2013-12-11",
+          "2015-03-05",
+          "2015-05-19",
+          "2015-12-04",
+          "2016-07-27",
+          "2016-12-14",
+          "2018-05-07"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 10,
+        "n_hits": 1,
+        "hit_rate": 0.1,
+        "base_rate": 0.09578544061302682,
+        "lift": 1.044,
+        "p_value": 0.3879224155168966,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-02-21",
+          "2019-07-03",
+          "2020-04-16",
+          "2020-08-11",
+          "2021-05-10",
+          "2022-06-13",
+          "2022-08-11",
+          "2023-08-01",
+          "2024-05-21",
+          "2025-09-09"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      }
+    },
+    {
+      "group": "all",
+      "window": 21,
+      "z_threshold": 1.5,
+      "horizon": 10,
+      "train": {
+        "n_events": 17,
+        "n_hits": 2,
+        "hit_rate": 0.11764705882352941,
+        "base_rate": 0.14217182730047973,
+        "lift": 0.8274990977986286,
+        "p_value": 0.6550689862027594,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2009-03-18",
+          "2009-10-07",
+          "2009-12-03",
+          "2010-03-24",
+          "2010-10-27",
+          "2011-11-30",
+          "2012-03-14",
+          "2012-12-10",
+          "2013-05-31",
+          "2013-09-19",
+          "2013-12-11",
+          "2015-03-05",
+          "2015-05-19",
+          "2015-12-04",
+          "2016-07-27",
+          "2016-12-14",
+          "2018-05-07"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 10,
+        "n_hits": 1,
+        "hit_rate": 0.1,
+        "base_rate": 0.18834080717488788,
+        "lift": 0.5309523809523811,
+        "p_value": 0.7354529094181164,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-02-21",
+          "2019-07-03",
+          "2020-04-16",
+          "2020-08-11",
+          "2021-05-10",
+          "2022-06-13",
+          "2022-08-11",
+          "2023-08-01",
+          "2024-05-21",
+          "2025-09-09"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      }
+    },
+    {
+      "group": "all",
+      "window": 21,
+      "z_threshold": 1.5,
+      "horizon": 20,
+      "train": {
+        "n_events": 17,
+        "n_hits": 6,
+        "hit_rate": 0.35294117647058826,
+        "base_rate": 0.27025843188786686,
+        "lift": 1.3059395557250453,
+        "p_value": 0.21275744851029793,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2009-03-18",
+          "2009-10-07",
+          "2009-12-03",
+          "2010-03-24",
+          "2010-10-27",
+          "2011-11-30",
+          "2012-03-14",
+          "2012-12-10",
+          "2013-05-31",
+          "2013-09-19",
+          "2013-12-11",
+          "2015-03-05",
+          "2015-05-19",
+          "2015-12-04",
+          "2016-07-27",
+          "2016-12-14",
+          "2018-05-07"
+        ],
+        "hit_flags": [
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 10,
+        "n_hits": 3,
+        "hit_rate": 0.3,
+        "base_rate": 0.34107027724049,
+        "lift": 0.8795841209829868,
+        "p_value": 0.6412717456508699,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-02-21",
+          "2019-07-03",
+          "2020-04-16",
+          "2020-08-11",
+          "2021-05-10",
+          "2022-06-13",
+          "2022-08-11",
+          "2023-08-01",
+          "2024-05-21",
+          "2025-09-09"
+        ],
+        "hit_flags": [
+          false,
+          true,
+          false,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      }
+    },
+    {
+      "group": "all",
+      "window": 21,
+      "z_threshold": 2.0,
+      "horizon": 5,
+      "train": {
+        "n_events": 12,
+        "n_hits": 2,
+        "hit_rate": 0.16666666666666666,
+        "base_rate": 0.07186411149825785,
+        "lift": 2.319191919191919,
+        "p_value": 0.13177364527094582,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2008-12-31",
+          "2009-03-18",
+          "2009-05-29",
+          "2010-03-24",
+          "2010-11-02",
+          "2011-12-01",
+          "2012-03-26",
+          "2012-12-13",
+          "2013-06-04",
+          "2015-03-06",
+          "2016-09-06",
+          "2018-05-11"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          true,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 8,
+        "n_hits": 1,
+        "hit_rate": 0.125,
+        "base_rate": 0.09578544061302682,
+        "lift": 1.305,
+        "p_value": 0.3129374125174965,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-02-28",
+          "2019-07-03",
+          "2020-08-28",
+          "2022-06-15",
+          "2022-08-19",
+          "2024-05-23",
+          "2025-01-21",
+          "2026-03-23"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      }
+    },
+    {
+      "group": "all",
+      "window": 21,
+      "z_threshold": 2.0,
+      "horizon": 10,
+      "train": {
+        "n_events": 12,
+        "n_hits": 4,
+        "hit_rate": 0.3333333333333333,
+        "base_rate": 0.14217182730047973,
+        "lift": 2.3445807770961142,
+        "p_value": 0.04839032193561288,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2008-12-31",
+          "2009-03-18",
+          "2009-05-29",
+          "2010-03-24",
+          "2010-11-02",
+          "2011-12-01",
+          "2012-03-26",
+          "2012-12-13",
+          "2013-06-04",
+          "2015-03-06",
+          "2016-09-06",
+          "2018-05-11"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          false,
+          true,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 8,
+        "n_hits": 1,
+        "hit_rate": 0.125,
+        "base_rate": 0.18834080717488788,
+        "lift": 0.6636904761904763,
+        "p_value": 0.6308738252349531,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-02-28",
+          "2019-07-03",
+          "2020-08-28",
+          "2022-06-15",
+          "2022-08-19",
+          "2024-05-23",
+          "2025-01-21",
+          "2026-03-23"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      }
+    },
+    {
+      "group": "all",
+      "window": 21,
+      "z_threshold": 2.0,
+      "horizon": 20,
+      "train": {
+        "n_events": 12,
+        "n_hits": 4,
+        "hit_rate": 0.3333333333333333,
+        "base_rate": 0.27025843188786686,
+        "lift": 1.2333873581847647,
+        "p_value": 0.34653069386122776,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2008-12-31",
+          "2009-03-18",
+          "2009-05-29",
+          "2010-03-24",
+          "2010-11-02",
+          "2011-12-01",
+          "2012-03-26",
+          "2012-12-13",
+          "2013-06-04",
+          "2015-03-06",
+          "2016-09-06",
+          "2018-05-11"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          false,
+          true,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 8,
+        "n_hits": 2,
+        "hit_rate": 0.25,
+        "base_rate": 0.34107027724049,
+        "lift": 0.7329867674858224,
+        "p_value": 0.7126574685062987,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-02-28",
+          "2019-07-03",
+          "2020-08-28",
+          "2022-06-15",
+          "2022-08-19",
+          "2024-05-23",
+          "2025-01-21",
+          "2026-03-23"
+        ],
+        "hit_flags": [
+          false,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "warning": null
+      }
+    },
+    {
+      "group": "all",
+      "window": 63,
+      "z_threshold": 1.5,
+      "horizon": 5,
+      "train": {
+        "n_events": 5,
+        "n_hits": 1,
+        "hit_rate": 0.2,
+        "base_rate": 0.07320319432120674,
+        "lift": 2.7321212121212124,
+        "p_value": 0.11277744451109778,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2010-11-29",
+          "2012-01-26",
+          "2012-03-28",
+          "2013-05-31",
+          "2015-03-23"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          true,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 3,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.09578544061302682,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-07-05",
+          "2020-10-08",
+          "2022-06-08"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "all",
+      "window": 63,
+      "z_threshold": 1.5,
+      "horizon": 10,
+      "train": {
+        "n_events": 5,
+        "n_hits": 2,
+        "hit_rate": 0.4,
+        "base_rate": 0.14482452243447358,
+        "lift": 2.761963190184049,
+        "p_value": 0.05638872225554889,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2010-11-29",
+          "2012-01-26",
+          "2012-03-28",
+          "2013-05-31",
+          "2015-03-23"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          true,
+          true,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 3,
+        "n_hits": 0,
+        "hit_rate": 0.0,
+        "base_rate": 0.18834080717488788,
+        "lift": 0.0,
+        "p_value": 1.0,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-07-05",
+          "2020-10-08",
+          "2022-06-08"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "all",
+      "window": 63,
+      "z_threshold": 1.5,
+      "horizon": 20,
+      "train": {
+        "n_events": 5,
+        "n_hits": 2,
+        "hit_rate": 0.4,
+        "base_rate": 0.27532351628737173,
+        "lift": 1.452836304700162,
+        "p_value": 0.23035392921415718,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2010-11-29",
+          "2012-01-26",
+          "2012-03-28",
+          "2013-05-31",
+          "2015-03-23"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          true,
+          true,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 3,
+        "n_hits": 2,
+        "hit_rate": 0.6666666666666666,
+        "base_rate": 0.34107027724049,
+        "lift": 1.9546313799621928,
+        "p_value": 0.12157568486302739,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-07-05",
+          "2020-10-08",
+          "2022-06-08"
+        ],
+        "hit_flags": [
+          true,
+          true,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "all",
+      "window": 63,
+      "z_threshold": 2.0,
+      "horizon": 5,
+      "train": {
+        "n_events": 7,
+        "n_hits": 1,
+        "hit_rate": 0.14285714285714285,
+        "base_rate": 0.07320319432120674,
+        "lift": 1.9515151515151514,
+        "p_value": 0.17956408718256348,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2009-03-18",
+          "2009-06-04",
+          "2010-12-23",
+          "2012-01-31",
+          "2012-04-03",
+          "2013-06-13",
+          "2015-04-07"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 4,
+        "n_hits": 1,
+        "hit_rate": 0.25,
+        "base_rate": 0.09578544061302682,
+        "lift": 2.61,
+        "p_value": 0.11377724455108978,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-07-25",
+          "2021-03-09",
+          "2022-06-13",
+          "2022-08-18"
+        ],
+        "hit_flags": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "all",
+      "window": 63,
+      "z_threshold": 2.0,
+      "horizon": 10,
+      "train": {
+        "n_events": 7,
+        "n_hits": 1,
+        "hit_rate": 0.14285714285714285,
+        "base_rate": 0.14482452243447358,
+        "lift": 0.9864154250657317,
+        "p_value": 0.4153169366126775,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2009-03-18",
+          "2009-06-04",
+          "2010-12-23",
+          "2012-01-31",
+          "2012-04-03",
+          "2013-06-13",
+          "2015-04-07"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 4,
+        "n_hits": 1,
+        "hit_rate": 0.25,
+        "base_rate": 0.18834080717488788,
+        "lift": 1.3273809523809526,
+        "p_value": 0.3333333333333333,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-07-25",
+          "2021-03-09",
+          "2022-06-13",
+          "2022-08-18"
+        ],
+        "hit_flags": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    },
+    {
+      "group": "all",
+      "window": 63,
+      "z_threshold": 2.0,
+      "horizon": 20,
+      "train": {
+        "n_events": 7,
+        "n_hits": 1,
+        "hit_rate": 0.14285714285714285,
+        "base_rate": 0.27532351628737173,
+        "lift": 0.5188701088214864,
+        "p_value": 0.7614477104579084,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2009-03-18",
+          "2009-06-04",
+          "2010-12-23",
+          "2012-01-31",
+          "2012-04-03",
+          "2013-06-13",
+          "2015-04-07"
+        ],
+        "hit_flags": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false
+        ],
+        "warning": null
+      },
+      "test": {
+        "n_events": 4,
+        "n_hits": 1,
+        "hit_rate": 0.25,
+        "base_rate": 0.34107027724049,
+        "lift": 0.7329867674858224,
+        "p_value": 0.671865626874625,
+        "n_permutations": 5000,
+        "event_dates": [
+          "2019-07-25",
+          "2021-03-09",
+          "2022-06-13",
+          "2022-08-18"
+        ],
+        "hit_flags": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "warning": "insufficient events (<5)"
+      }
+    }
+  ],
+  "data_snapshot_end": "2026-06-30",
+  "generated_at": "2026-09-28T20:29:39+00:00"
+}

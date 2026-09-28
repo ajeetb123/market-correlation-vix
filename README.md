@@ -8,9 +8,14 @@ the tested pipeline, measured by a 24-case eval harness.
 
 ## Result
 <!-- RESULTS:START -->
-<!-- RESULTS:END -->
+**Headline.** Preregistered test (risk group, 21-day window, z >= 2.0, 10-day horizon, clean events): on the 2019-01-01 to 2026-06-30 test period, 2 correlation events had a VIX-spike hit rate of 0.0% vs a base rate of 18.8% (lift 0.00, permutation p = 1.000). Too few events for a reliable test.
 
-Full results: [reports/results.md](reports/results.md)
+**Reverse direction** (VIX events followed by correlation spikes, test period): 24 events, lift 0.00, p = 1.000.
+
+**Out-of-sample R^2** of the correlation z-score regression: 0.0210.
+
+Full tables: [reports/results.md](reports/results.md).
+<!-- RESULTS:END -->
 
 ## Why this is hard
 
@@ -62,6 +67,7 @@ vixagent eval               # run the eval suite
 
 ## Eval results
 <!-- EVALS:START -->
+Evals not yet run.
 <!-- EVALS:END -->
 
 What the evals do and do not test: the evals measure whether the agent uses the pipeline faithfully (every number grounded in a tool output, correct values, the right tools called, and pushback on false premises, lookahead, and overfitting). They do not test whether the pipeline itself is correct, because the agent and the reference answers call the same analysis code; that is covered by the pytest suite (synthetic data with known answers, the hand-checkable event study, and the no-lookahead test).
