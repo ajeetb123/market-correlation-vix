@@ -1,0 +1,359 @@
+{
+  "equity_styles": [
+    "VFINX",
+    "NAESX",
+    "VIVAX",
+    "VIGRX"
+  ],
+  "gold": "GC=F",
+  "preregistered": {
+    "hypotheses": {
+      "equity_styles": "Over the 63 trading days before a VIX-doubling event, the average pairwise correlation of daily returns among US large-cap, small-cap, value, and growth equity (VFINX, NAESX, VIVAX, VIGRX) is higher than its average over all days.\n",
+      "gold_equity": "Over the same 63-day lead-up windows, the average correlation between gold (GC=F front-month futures) and those four equity styles is lower (more negative) than its average over all days.\n"
+    },
+    "event_definition": "A VIX-doubling event is a day when the VIX closes at least 2x its minimum over the trailing 63 trading days (inclusive), declustered so that a day counts only if no qualifying day occurred in the prior 126 trading days. The lead-up window is the 63 trading days ending the day before the event.\n",
+    "lookback": 63,
+    "multiple": 2.0,
+    "cooldown": 126,
+    "window": 63,
+    "paper_years": [
+      1998,
+      2002,
+      2008,
+      2010,
+      2011,
+      2020
+    ],
+    "primary_event_set": "new",
+    "n_permutations": 10000,
+    "alpha_per_test": 0.025,
+    "note": "Tests the lead-up claim in Horstmeyer, Holtman and Bondugula (2025): equity-style correlations run very high and gold-equity correlation unusually negative before VIX blowups. The event definition was checked against VIX data only (no correlations computed) and reproduces all six of the paper's events. Primary evidence is the events outside the paper's six event years, which the paper never studied; the paper's own events and the pooled set are secondary. Two primary tests at alpha 0.025 each (Bonferroni, family alpha 0.05), one-sided circular-shift permutation p-values with the project seed. Events whose 63-day lead-up window is not fully covered by the data (for example gold before late 2000) are dropped. Fixed before any lead-up correlation was computed on real data.\n"
+  },
+  "tests": [
+    {
+      "measure": "equity_styles",
+      "direction": "high",
+      "event_set": "new",
+      "event_dates": [
+        "1994-03-31",
+        "2001-09-17",
+        "2006-06-13",
+        "2007-08-09",
+        "2014-10-13",
+        "2015-08-21",
+        "2018-02-05",
+        "2018-10-10",
+        "2019-08-05",
+        "2021-12-01",
+        "2024-08-05",
+        "2026-03-06"
+      ],
+      "event_values": [
+        0.8536281484751965,
+        0.8237745373182084,
+        0.9386449848480485,
+        0.9624622634366421,
+        0.9442923951306487,
+        0.9577270526650197,
+        0.8473155690200197,
+        0.7038632086870557,
+        0.8910298626898442,
+        0.7764775514087779,
+        0.6161020671465032,
+        0.7062468310663524
+      ],
+      "mean_leadup": 0.8351303726576931,
+      "typical": 0.8756797993369606,
+      "p_value": 0.9486051394860514,
+      "n_permutations": 10000
+    },
+    {
+      "measure": "equity_styles",
+      "direction": "high",
+      "event_set": "paper",
+      "event_dates": [
+        "1998-08-14",
+        "2002-07-16",
+        "2008-09-29",
+        "2010-05-06",
+        "2011-08-04",
+        "2020-02-24"
+      ],
+      "event_values": [
+        0.8472189058865949,
+        0.8846739106630532,
+        0.9529211473993127,
+        0.9616459435457565,
+        0.9638652313619831,
+        0.8710914801196129
+      ],
+      "mean_leadup": 0.9135694364960522,
+      "typical": 0.8756797993369606,
+      "p_value": 0.11408859114088592,
+      "n_permutations": 10000
+    },
+    {
+      "measure": "equity_styles",
+      "direction": "high",
+      "event_set": "all",
+      "event_dates": [
+        "1994-03-31",
+        "1998-08-14",
+        "2001-09-17",
+        "2002-07-16",
+        "2006-06-13",
+        "2007-08-09",
+        "2008-09-29",
+        "2010-05-06",
+        "2011-08-04",
+        "2014-10-13",
+        "2015-08-21",
+        "2018-02-05",
+        "2018-10-10",
+        "2019-08-05",
+        "2020-02-24",
+        "2021-12-01",
+        "2024-08-05",
+        "2026-03-06"
+      ],
+      "event_values": [
+        0.8536281484751965,
+        0.8472189058865949,
+        0.8237745373182084,
+        0.8846739106630532,
+        0.9386449848480485,
+        0.9624622634366421,
+        0.9529211473993127,
+        0.9616459435457565,
+        0.9638652313619831,
+        0.9442923951306487,
+        0.9577270526650197,
+        0.8473155690200197,
+        0.7038632086870557,
+        0.8910298626898442,
+        0.8710914801196129,
+        0.7764775514087779,
+        0.6161020671465032,
+        0.7062468310663524
+      ],
+      "mean_leadup": 0.8612767272704794,
+      "typical": 0.8756797993369606,
+      "p_value": 0.7847215278472153,
+      "n_permutations": 10000
+    },
+    {
+      "measure": "gold_equity",
+      "direction": "low",
+      "event_set": "new",
+      "event_dates": [
+        "2001-09-17",
+        "2006-06-13",
+        "2007-08-09",
+        "2014-10-13",
+        "2015-08-21",
+        "2018-02-05",
+        "2018-10-10",
+        "2019-08-05",
+        "2021-12-01",
+        "2024-08-05",
+        "2026-03-06"
+      ],
+      "event_values": [
+        -0.25430707729574337,
+        -0.0006780434583788346,
+        0.15562484465817128,
+        -0.31636759445428114,
+        -0.1816714326536765,
+        0.1347360952362209,
+        0.20222859581799435,
+        -0.08742920822221516,
+        -0.06988367094779274,
+        0.20533796024280515,
+        0.18384118500320645
+      ],
+      "mean_leadup": -0.002597122370335421,
+      "typical": 0.0015744237102309458,
+      "p_value": 0.49335066493350666,
+      "n_permutations": 10000
+    },
+    {
+      "measure": "gold_equity",
+      "direction": "low",
+      "event_set": "paper",
+      "event_dates": [
+        "2002-07-16",
+        "2008-09-29",
+        "2010-05-06",
+        "2011-08-04",
+        "2020-02-24"
+      ],
+      "event_values": [
+        -0.24759867322951074,
+        -0.3665920167795298,
+        0.4551292443592997,
+        0.017361893858955126,
+        -0.41721284113075674
+      ],
+      "mean_leadup": -0.1117824785843085,
+      "typical": 0.0015744237102309458,
+      "p_value": 0.14378562143785623,
+      "n_permutations": 10000
+    },
+    {
+      "measure": "gold_equity",
+      "direction": "low",
+      "event_set": "all",
+      "event_dates": [
+        "2001-09-17",
+        "2002-07-16",
+        "2006-06-13",
+        "2007-08-09",
+        "2008-09-29",
+        "2010-05-06",
+        "2011-08-04",
+        "2014-10-13",
+        "2015-08-21",
+        "2018-02-05",
+        "2018-10-10",
+        "2019-08-05",
+        "2020-02-24",
+        "2021-12-01",
+        "2024-08-05",
+        "2026-03-06"
+      ],
+      "event_values": [
+        -0.25430707729574337,
+        -0.24759867322951074,
+        -0.0006780434583788346,
+        0.15562484465817128,
+        -0.3665920167795298,
+        0.4551292443592997,
+        0.017361893858955126,
+        -0.31636759445428114,
+        -0.1816714326536765,
+        0.1347360952362209,
+        0.20222859581799435,
+        -0.08742920822221516,
+        -0.41721284113075674,
+        -0.06988367094779274,
+        0.20533796024280515,
+        0.18384118500320645
+      ],
+      "mean_leadup": -0.036717546187202,
+      "typical": 0.0015744237102309458,
+      "p_value": 0.22057794220577942,
+      "n_permutations": 10000
+    }
+  ],
+  "events": [
+    {
+      "date": "1994-03-31",
+      "set": "new",
+      "equity_styles": 0.8536281484751965,
+      "gold_equity": null
+    },
+    {
+      "date": "1998-08-14",
+      "set": "paper",
+      "equity_styles": 0.8472189058865949,
+      "gold_equity": null
+    },
+    {
+      "date": "2001-09-17",
+      "set": "new",
+      "equity_styles": 0.8237745373182084,
+      "gold_equity": -0.25430707729574337
+    },
+    {
+      "date": "2002-07-16",
+      "set": "paper",
+      "equity_styles": 0.8846739106630532,
+      "gold_equity": -0.24759867322951074
+    },
+    {
+      "date": "2006-06-13",
+      "set": "new",
+      "equity_styles": 0.9386449848480485,
+      "gold_equity": -0.0006780434583788346
+    },
+    {
+      "date": "2007-08-09",
+      "set": "new",
+      "equity_styles": 0.9624622634366421,
+      "gold_equity": 0.15562484465817128
+    },
+    {
+      "date": "2008-09-29",
+      "set": "paper",
+      "equity_styles": 0.9529211473993127,
+      "gold_equity": -0.3665920167795298
+    },
+    {
+      "date": "2010-05-06",
+      "set": "paper",
+      "equity_styles": 0.9616459435457565,
+      "gold_equity": 0.4551292443592997
+    },
+    {
+      "date": "2011-08-04",
+      "set": "paper",
+      "equity_styles": 0.9638652313619831,
+      "gold_equity": 0.017361893858955126
+    },
+    {
+      "date": "2014-10-13",
+      "set": "new",
+      "equity_styles": 0.9442923951306487,
+      "gold_equity": -0.31636759445428114
+    },
+    {
+      "date": "2015-08-21",
+      "set": "new",
+      "equity_styles": 0.9577270526650197,
+      "gold_equity": -0.1816714326536765
+    },
+    {
+      "date": "2018-02-05",
+      "set": "new",
+      "equity_styles": 0.8473155690200197,
+      "gold_equity": 0.1347360952362209
+    },
+    {
+      "date": "2018-10-10",
+      "set": "new",
+      "equity_styles": 0.7038632086870557,
+      "gold_equity": 0.20222859581799435
+    },
+    {
+      "date": "2019-08-05",
+      "set": "new",
+      "equity_styles": 0.8910298626898442,
+      "gold_equity": -0.08742920822221516
+    },
+    {
+      "date": "2020-02-24",
+      "set": "paper",
+      "equity_styles": 0.8710914801196129,
+      "gold_equity": -0.41721284113075674
+    },
+    {
+      "date": "2021-12-01",
+      "set": "new",
+      "equity_styles": 0.7764775514087779,
+      "gold_equity": -0.06988367094779274
+    },
+    {
+      "date": "2024-08-05",
+      "set": "new",
+      "equity_styles": 0.6161020671465032,
+      "gold_equity": 0.20533796024280515
+    },
+    {
+      "date": "2026-03-06",
+      "set": "new",
+      "equity_styles": 0.7062468310663524,
+      "gold_equity": 0.18384118500320645
+    }
+  ],
+  "data_snapshot_end": "2026-06-30"
+}
