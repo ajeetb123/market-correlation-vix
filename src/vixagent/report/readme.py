@@ -47,8 +47,10 @@ def results_block(results: dict[str, Any]) -> str:
 def update_readme(readme_path: Path, results: dict[str, Any], evals_summary: str | None) -> None:
     """RESULTS block: headline sentence, a one-line reverse-direction summary,
     the out-of-sample R squared, and a link to reports/results.md.
-    EVALS block: evals_summary if provided, else 'Evals not yet run.'"""
+    EVALS block: evals_summary if provided, else 'Evals not yet run'. The EVALS
+    block is optional: if the README has no EVALS markers it is left alone."""
     text = readme_path.read_text()
     text = replace_between_markers(text, "RESULTS", results_block(results))
-    text = replace_between_markers(text, "EVALS", evals_summary or "Evals not yet run.")
+    if "<!-- EVALS:START -->" in text:
+        text = replace_between_markers(text, "EVALS", evals_summary or "Evals not yet run.")
     readme_path.write_text(text)
