@@ -1,0 +1,33 @@
+hypotheses:
+  equity_styles: >
+    Over the 63 trading days before a VIX-doubling event, the average pairwise
+    correlation of daily returns among US large-cap, small-cap, value, and growth
+    equity (VFINX, NAESX, VIVAX, VIGRX) is higher than its average over all days.
+  gold_equity: >
+    Over the same 63-day lead-up windows, the average correlation between gold
+    (GC=F front-month futures) and those four equity styles is lower (more negative)
+    than its average over all days.
+event_definition: >
+  A VIX-doubling event is a day when the VIX closes at least 2x its minimum over
+  the trailing 63 trading days (inclusive), declustered so that a day counts only if
+  no qualifying day occurred in the prior 126 trading days. The lead-up window is the
+  63 trading days ending the day before the event.
+lookback: 63
+multiple: 2.0
+cooldown: 126
+window: 63
+paper_years: [1998, 2002, 2008, 2010, 2011, 2020]
+primary_event_set: new
+n_permutations: 10000
+alpha_per_test: 0.025
+note: >
+  Tests the lead-up claim in Horstmeyer, Holtman and Bondugula (2025): equity-style
+  correlations run very high and gold-equity correlation unusually negative before
+  VIX blowups. The event definition was checked against VIX data only (no correlations
+  computed) and reproduces all six of the paper's events. Primary evidence is the
+  events outside the paper's six event years, which the paper never studied; the
+  paper's own events and the pooled set are secondary. Two primary tests at
+  alpha 0.025 each (Bonferroni, family alpha 0.05), one-sided circular-shift
+  permutation p-values with the project seed. Events whose 63-day lead-up window is
+  not fully covered by the data (for example gold before late 2000) are dropped.
+  Fixed before any lead-up correlation was computed on real data.
