@@ -251,3 +251,54 @@ def load_followup_prereg(path: Path | None = None) -> FollowupPrereg:
     path = path or find_project_root() / "config" / "preregistered_followup.yaml"
     with open(path) as fh:
         return FollowupPrereg.model_validate(yaml.safe_load(fh))
+
+
+class PaperConfig(BaseModel):
+    """Validated contents of config/paper_replication.yaml."""
+
+    equity_styles: list[str]
+    gold: str
+    data: DataConfig
+
+
+class PaperPrereg(BaseModel):
+    """Validated contents of config/preregistered_paper.yaml."""
+
+    hypotheses: dict[Literal["equity_styles", "gold_equity"], str]
+    event_definition: str
+    lookback: int = Field(gt=1)
+    multiple: float = Field(gt=1)
+    cooldown: int = Field(ge=0)
+    window: int = Field(gt=1)
+    paper_years: list[int]
+    primary_event_set: Literal["new"]
+    n_permutations: int = Field(gt=0)
+    alpha_per_test: float = Field(gt=0, lt=1)
+    note: str
+
+
+def load_paper(base: Settings, path: Path | None = None) -> tuple[Settings, PaperConfig]:
+    """Load config/paper_replication.yaml and derive Settings for fetching its data.
+
+    Both groups hold the equity styles plus gold so the cache and fetch code can
+    be reused. Settings periods are placeholders; the replication does not use them.
+    """
+    path = path or find_project_root() / "config" / "paper_replication.yaml"
+    with open(path) as fh:
+        cfg = PaperConfig.model_validate(yaml.safe_load(fh))
+    tickers = [*cfg.equity_styles, cfg.gold]
+    d = base.model_dump()
+    d["universe"] = {"risk": tickers, "all": tickers}
+    d["data"].update(cfg.data.model_dump())
+    d["periods"] = {
+        "train": (cfg.data.start, date(2007, 12, 31)),
+        "test": (date(2008, 1, 1), cfg.data.snapshot_end),
+    }
+    return Settings.model_validate(d), cfg
+
+
+def load_paper_prereg(path: Path | None = None) -> PaperPrereg:
+    """Load config/preregistered_paper.yaml. Raises FileNotFoundError if absent."""
+    path = path or find_project_root() / "config" / "preregistered_paper.yaml"
+    with open(path) as fh:
+        return PaperPrereg.model_validate(yaml.safe_load(fh))
