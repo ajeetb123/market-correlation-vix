@@ -29,6 +29,19 @@ This version rebuilds the test to address that version's weaknesses: a cross-ass
 Full tables: [reports/results.md](reports/results.md).
 <!-- RESULTS:END -->
 
+## Follow-up study
+
+The original test found a hint of the reverse pattern: high correlation was followed by the VIX
+*falling*, even after accounting for the VIX's own recent move. Because that idea came from the
+same data, it was preregistered as a new hypothesis (git tag `followup-prereg-freeze`) and tested
+once on data the project had never analyzed: nine US sector ETFs from 1998 to 2007.
+
+<!-- FOLLOWUP:START -->
+Follow-up test (sector ETFs, 21-day window, 10-day horizon, with VIX momentum and level controls): on the untouched 1998-12-22 to 2007-04-30 holdout, the coefficient on the correlation z-score was -0.0078 (HAC t = -1.26, one-sided p = 0.1038, n = 1816). Not supported at alpha = 0.05.
+
+Details: [reports/followup.md](reports/followup.md).
+<!-- FOLLOWUP:END -->
+
 ## Why this is hard
 
 **Lookahead bias.** A feature that quietly uses future data, like a z-score standardized with full-sample statistics, makes any predictor look better than it could ever be in real time. Every baseline here is built from past data only (`shift(1)` before rolling statistics), and forward-looking code is confined to a single module, `targets.py`. An automated test recomputes every feature on data truncated at random dates and fails if any earlier value changes; a companion test proves it catches a deliberately leaky z-score.
