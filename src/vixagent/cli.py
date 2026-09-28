@@ -19,7 +19,15 @@ from vixagent.agent.client import MissingAPIKeyError, agent_model, judge_model, 
 from vixagent.agent.loop import AgentResult, run_agent
 from vixagent.agent.service import ResearchService
 from vixagent.agent.transcript import TranscriptWriter
-from vixagent.config import find_project_root, load_preregistered, load_settings
+from vixagent.analysis.followup import FollowupResult, run_followup
+from vixagent.analysis.frames import FrameStore
+from vixagent.config import (
+    find_project_root,
+    load_followup,
+    load_followup_prereg,
+    load_preregistered,
+    load_settings,
+)
 from vixagent.data.align import align_group
 from vixagent.data.cache import load_or_fetch
 from vixagent.data.fetch import DataError
@@ -28,7 +36,9 @@ from vixagent.evals.cases import load_cases
 from vixagent.evals.judge import calibrate
 from vixagent.evals.runner import run_suite
 from vixagent.report import generate_report
+from vixagent.report.followup import render_followup_md, verdict_sentence
 from vixagent.report.results import headline_sentence
+from vixagent.utils.jsonable import to_jsonable
 
 app = typer.Typer(help="VIX research agent CLI.", no_args_is_help=True)
 console = Console()
@@ -227,3 +237,82 @@ def eval_cmd(
     out_dir = run_suite(cases, repeats, root, service, client, client, agent_model(), judge_model())
     console.print(Markdown((out_dir / "summary.md").read_text()))
     console.print(f"Results written to {out_dir}")
+
+
+def _followup_row(label: str, r: FollowupResult) -> list[str]:
+    return [
+        label,
+        str(r.regression.n),
+        f"{r.coef_z:+.4f}",
+        f"{r.t_hac_z:+.2f}",
+        f"{r.p_one_sided:.4f}",
+    ]
+
+
+@app.command()
+def followup(
+    holdout: bool = typer.Option(
+        False, "--holdout", help="Evaluate the frozen follow-up test on the holdout period."
+    ),
+) -> None:
+    """Follow-up study on sector ETFs. Default: exploration on already-seen data only."""
+    load_dotenv()
+    base = load_settings()
+    settings, cfg = load_followup(base)
+    root = find_project_root()
+    try:
+        prices = load_or_fetch(settings)
+    except DataError as exc:
+        console.print(f"[red]Data error: {exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    store = FrameStore(prices, settings)
+
+    if not holdout:
+        table = Table(title="Exploration only (2007-2026, already seen): coefficient on z")
+        for col in ("spec", "n", "coef z", "t (HAC)", "one-sided p"):
+            table.add_column(col)
+        for window in base.grid.windows:
+            for horizon in base.grid.horizons:
+                for controls in (False, True):
+                    r = run_followup(
+                        store, "risk", window, horizon, cfg.periods.exploration, controls
+                    )
+                    label = f"W={window}, h={horizon}, {'controls' if controls else 'base'}"
+                    table.add_row(*_followup_row(label, r))
+        console.print(table)
+        console.print("[dim]Holdout (1998-2007) not computed.[/dim]")
+        return
+
+    try:
+        prereg = load_followup_prereg()
+    except FileNotFoundError as exc:
+        console.print(
+            "[red]No config/preregistered_followup.yaml. Freeze the follow-up "
+            "preregistration before evaluating the holdout.[/red]"
+        )
+        raise typer.Exit(code=1) from exc
+    p = prereg.primary
+    primary = run_followup(
+        store, "risk", p.window, p.horizon, cfg.periods.holdout, p.include_controls
+    )
+    secondary = run_followup(
+        store, "risk", p.window, p.horizon, cfg.periods.holdout, not p.include_controls
+    )
+    exploration = run_followup(
+        store, "risk", p.window, p.horizon, cfg.periods.exploration, p.include_controls
+    )
+    results = to_jsonable(
+        {
+            "universe": cfg.universe,
+            "preregistered": prereg.model_dump(),
+            "holdout_primary": primary,
+            "holdout_secondary": secondary,
+            "exploration_same_spec": exploration,
+            "data_snapshot_end": settings.data.snapshot_end,
+        }
+    )
+    reports = root / "reports"
+    reports.mkdir(exist_ok=True)
+    (reports / "followup.json").write_text(json.dumps(results, indent=2, allow_nan=False) + "\n")
+    (reports / "followup.md").write_text(render_followup_md(results))
+    console.print(verdict_sentence(results))

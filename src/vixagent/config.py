@@ -194,3 +194,60 @@ def load_preregistered(settings: Settings, path: Path | None = None) -> Preregis
         if value not in allowed:
             raise ValueError(f"preregistered {name}={value} is not in grid {allowed}")
     return prereg
+
+
+class FollowupPeriods(BaseModel):
+    """Holdout (untouched before the follow-up freeze) and exploration date ranges."""
+
+    holdout: tuple[date, date]
+    exploration: tuple[date, date]
+
+
+class FollowupConfig(BaseModel):
+    """Validated contents of config/followup.yaml."""
+
+    universe: list[str]
+    data: DataConfig
+    periods: FollowupPeriods
+
+
+def load_followup(base: Settings, path: Path | None = None) -> tuple[Settings, FollowupConfig]:
+    """Load config/followup.yaml and derive Settings for the sector universe.
+
+    Both groups ('risk' and 'all') are set to the sector list so the existing
+    frame and feature code can be reused unchanged. Settings periods map
+    train = holdout and test = exploration only to satisfy validation; the
+    follow-up code always passes explicit date ranges.
+    """
+    path = path or find_project_root() / "config" / "followup.yaml"
+    with open(path) as fh:
+        cfg = FollowupConfig.model_validate(yaml.safe_load(fh))
+    d = base.model_dump()
+    d["universe"] = {"risk": list(cfg.universe), "all": list(cfg.universe)}
+    d["data"].update(cfg.data.model_dump())
+    d["periods"] = {"train": cfg.periods.holdout, "test": cfg.periods.exploration}
+    return Settings.model_validate(d), cfg
+
+
+class FollowupPrimary(BaseModel):
+    """The preregistered follow-up test."""
+
+    window: int = Field(ge=10, le=126)
+    horizon: int = Field(ge=1, le=60)
+    include_controls: bool
+    alpha: float = Field(gt=0, lt=1)
+
+
+class FollowupPrereg(BaseModel):
+    """Validated contents of config/preregistered_followup.yaml."""
+
+    hypothesis: str
+    primary: FollowupPrimary
+    note: str
+
+
+def load_followup_prereg(path: Path | None = None) -> FollowupPrereg:
+    """Load config/preregistered_followup.yaml. Raises FileNotFoundError if absent."""
+    path = path or find_project_root() / "config" / "preregistered_followup.yaml"
+    with open(path) as fh:
+        return FollowupPrereg.model_validate(yaml.safe_load(fh))

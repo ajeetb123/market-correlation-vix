@@ -1,0 +1,18 @@
+# Follow-up study (see docs/FOLLOWUP.md): when average correlation is unusually high,
+# does the VIX fall more over the next days than its own recent move and level predict?
+#
+# Universe: the nine original Select Sector SPDR funds (all launched 1998-12-22).
+# SPY is excluded because it is a weighted sum of these sectors.
+universe: [XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY]
+
+data:
+  start: "1998-12-22"
+  snapshot_end: "2026-06-30"
+  vix_ticker: "^VIX"
+  cache_path: "data/raw/followup_prices.parquet"
+
+periods:
+  # Never analyzed by this project before the follow-up preregistration was frozen.
+  holdout: ["1998-12-22", "2007-04-30"]
+  # Already seen in the original study; used only for exploration before the freeze.
+  exploration: ["2007-05-01", "2026-06-30"]
