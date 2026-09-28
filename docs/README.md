@@ -7,10 +7,9 @@ Reading order and what each file is for.
 2. **`PLAN.md`**: phase overview, acceptance criteria, and the Checkpoint Questions you answer after each phase.
 
 ## For the coding agent (and for you to review)
-3. **`../AGENTS.md`** (repo root): operating rules. Read first, every session.
-4. **`SPEC.md`**: the source of truth for what gets built and why. Wins every conflict.
-5. **`steps/phase-N-*.md`**: the exact step-by-step procedure for each phase: files, signatures, algorithms, tests, verify commands, and commit messages.
-6. **`EVALS.md`**: design of the eval harness (used in Phase 4).
+3. **`SPEC.md`**: the source of truth for what gets built and why. Wins every conflict.
+4. **`steps/phase-N-*.md`**: the exact step-by-step procedure for each phase: files, signatures, algorithms, tests, verify commands, and commit messages.
+5. **`EVALS.md`**: design of the eval harness (used in Phase 4).
 
 ## Step files
 | Phase | File | Outcome |
@@ -28,7 +27,7 @@ Reading order and what each file is for.
 
 ## Kickoff prompt for each phase
 ```
-Read AGENTS.md, then docs/SPEC.md and docs/steps/phase-N-*.md.
+Read docs/SPEC.md and docs/steps/phase-N-*.md.
 Execute Phase N step by step. Use a task list with one item per step.
 Do not skip any Verify. Stop at the end of the phase.
 ```
