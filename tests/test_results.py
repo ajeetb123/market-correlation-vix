@@ -199,3 +199,12 @@ def test_report_cli_has_command() -> None:
     result = CliRunner().invoke(cli.app, ["--help"])
     assert "report" in result.stdout
     assert isinstance(pd.__version__, str)
+
+
+def test_update_readme_without_evals_block(ctx: dict[str, Any], tmp_path: Path) -> None:
+    path = tmp_path / "README.md"
+    path.write_text("# T\n<!-- RESULTS:START -->\n<!-- RESULTS:END -->\n")
+    update_readme(path, ctx["results"], None)
+    text = path.read_text()
+    assert headline_sentence(ctx["results"]) in text
+    assert "Evals not yet run" not in text
