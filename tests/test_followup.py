@@ -122,8 +122,10 @@ def test_holdout_writes_reports(
     wired: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     monkeypatch.setattr(cli, "load_followup_prereg", lambda: FollowupPrereg.model_validate(PREREG))
+    (tmp_path / "README.md").write_text("<!-- FOLLOWUP:START -->\n<!-- FOLLOWUP:END -->\n")
     result = CliRunner().invoke(cli.app, ["followup", "--holdout"])
     assert result.exit_code == 0, result.stdout
+    assert "Follow-up test (sector ETFs" in (tmp_path / "README.md").read_text()
     data = json.loads((tmp_path / "reports" / "followup.json").read_text())
     json.dumps(to_jsonable(data), allow_nan=False)
     assert set(data) >= {"holdout_primary", "holdout_secondary", "exploration_same_spec"}
