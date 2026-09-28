@@ -122,7 +122,13 @@ def plot_event_study(
         for i, r in enumerate(res):
             top = np.nanmax([r.hit_rate, r.base_rate, 0.0])
             ax.text(x[i], top + 0.01, f"n={r.n_events}", ha="center", fontsize=9)
+            if r.n_events == 0 or r.hit_rate == 0:
+                # Zero or undefined bars are invisible; label them so they do not look missing.
+                label = "no events" if r.n_events == 0 else "0%"
+                ax.text(x[i] - 0.2, 0.005, label, ha="center", va="bottom", fontsize=8, rotation=90)
         ax.set_xticks(x, [f"h={h}" for h in horizons])
+        ax.set_xlim(-0.7, len(horizons) - 0.3)
+        ax.margins(y=0.1)
         ax.set_title(f"{period.capitalize()} period")
         ax.set_ylabel("P(VIX spike within h days)")
     axes[0].legend(loc="upper left")
@@ -134,6 +140,9 @@ def plot_grid_lift(results: dict[str, Any], out: Path) -> Path:
     """Two heatmaps (train, test) of event-study lift for the risk group:
     rows are (window, z) combinations, columns are horizons."""
     rows = [r for r in results["grid"] if r["group"] == "risk"]
+    lifts = [r[p]["lift"] for r in rows for p in ("train", "test") if r[p]["lift"] is not None]
+    # One fixed scale for both panels, centered on lift 1 (no effect), so colors are comparable.
+    vmax = max([2.0, *lifts])
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     for ax, period in zip(axes, ("train", "test"), strict=True):
         df = pd.DataFrame(
@@ -147,8 +156,22 @@ def plot_grid_lift(results: dict[str, Any], out: Path) -> Path:
         table = table.reindex(
             index=list(dict.fromkeys(df["row"])), columns=list(dict.fromkeys(df["col"]))
         )
-        sns.heatmap(table, ax=ax, annot=True, fmt=".2f", center=1.0, cmap="RdBu_r")
+        sns.heatmap(
+            table,
+            ax=ax,
+            annot=True,
+            fmt=".2f",
+            center=1.0,
+            vmin=0.0,
+            vmax=vmax,
+            cmap="RdBu_r",
+            linewidths=0.5,
+            linecolor="lightgray",
+        )
         ax.set_title(f"Lift, risk group ({period})")
         ax.set_xlabel("")
         ax.set_ylabel("")
+        ax.tick_params(axis="y", rotation=0)
+    fig.text(0.5, -0.02, "Blank cells: no events. Lift 1 = no effect.", ha="center", fontsize=9)
+    fig.tight_layout()
     return _save(fig, out)
