@@ -24,9 +24,9 @@ def primary_verdicts(results: dict[str, Any]) -> list[str]:
         p = t["p_value"]
         ok = p is not None and p < alpha
         out.append(
-            f"{LABELS[t['measure']]} in the 3 months before a VIX doubling: across "
-            f"{len(t['event_dates'])} events the paper did not study, the lead-up average was "
-            f"{_fmt(t['mean_leadup'])} vs {_fmt(t['typical'])} on a typical day "
+            f"Claim: {LABELS[t['measure']].lower()} in the 3 months before a VIX doubling. "
+            f"Across {len(t['event_dates'])} events the paper did not study, the lead-up "
+            f"average was {_fmt(t['mean_leadup'])} vs {_fmt(t['typical'])} on a typical day "
             f"(one-sided permutation p = {_fmt(p)}). "
             + (f"Supported at alpha = {alpha}." if ok else f"Not supported at alpha = {alpha}.")
         )
