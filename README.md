@@ -11,13 +11,15 @@ market fear spikes, using a locked-in test and safeguards against lookahead bias
 evidence that they do: the big correlation spikes landed on the same days as the fear spikes,
 not before them. When the data hinted at a different pattern, I locked that in as a new
 hypothesis and tested it on untouched 2000 to 2007 data. It pointed the same way but was not
-statistically significant, and I report that too.
+statistically significant, and I report that too. Finally, I tested my paper's own claim (that
+stock styles move together unusually tightly and gold moves against stocks in the three months
+before a VIX blowup) on blowups the paper never studied. Neither pattern held up.
 
 ## Background
 
 This extends [a paper I co-authored](https://www.advisorperspectives.com/articles/2025/10/06/what-signals-market-vix-blow-up) with Derek Horstmeyer and Hugh Holtman. It compared asset correlations in the three months before six major VIX spikes (1998 to 2020) with correlations during them. In the lead-up, correlations between equity styles (large, small, value, growth) ran very high and the gold-equity correlation ran unusually negative, which the paper read as signs of froth. During the spikes, diversification broke down as most correlations rose.
 
-This project asks a narrower, testable version of the early-warning question with continuous daily data: does a sudden jump in average cross-asset correlation warn of a VIX spike within the next few days to weeks? It does not directly test the paper's three-month lead-up signal, which is about the level of equity-equity and gold-equity correlations over months rather than sudden spikes. Its finding that correlation spikes coincide with VIX spikes is consistent with the paper's observation that diversification breaks down during the spike itself.
+This project asks a narrower, testable version of the early-warning question with continuous daily data: does a sudden jump in average cross-asset correlation warn of a VIX spike within the next few days to weeks? The paper's three-month lead-up signal, which is about the level of equity-equity and gold-equity correlations over months rather than sudden spikes, is tested separately below. The finding that correlation spikes coincide with VIX spikes is consistent with the paper's observation that diversification breaks down during the spike itself.
 
 A first version of this repo tested that idea on a basket of 10 unrelated large-cap stocks from 2015 onward, using cross-correlation, Granger causality, and a simple event study. It found that correlation and the VIX clearly move together, but not that correlation leads; if anything, the VIX moved slightly first. That version is preserved in the git history.
 
@@ -49,6 +51,27 @@ Follow-up test (sector ETFs, 21-day window, 10-day horizon, with VIX momentum an
 
 Details: [reports/followup.md](reports/followup.md).
 <!-- FOLLOWUP:END -->
+
+## Testing the paper's claim
+
+The paper's main finding is about the three months before a blowup: correlations between
+equity styles (large, small, value, growth) run very high, and gold moves against stocks. This
+was preregistered (git tag `paper-prereg-freeze`) and tested on every VIX-doubling event since
+1994 that the data covers, using Vanguard index funds and gold futures. The main evidence is the
+events the paper never studied; its own events are re-checked separately.
+
+<!-- PAPER:START -->
+Claim: equity-style correlation (large, small, value, growth) is unusually high in the 3 months before a VIX doubling. Across 12 events the paper did not study, the lead-up average was 0.835 vs 0.876 on a typical day (one-sided permutation p = 0.949). Not supported at alpha = 0.025.
+
+Claim: gold-equity correlation is unusually negative in the 3 months before a VIX doubling. Across 11 events the paper did not study, the lead-up average was -0.003 vs 0.002 on a typical day (one-sided permutation p = 0.493). Not supported at alpha = 0.025.
+
+Details: [reports/paper_replication.md](reports/paper_replication.md).
+<!-- PAPER:END -->
+
+Equity styles move together closely almost all the time, so the very high lead-up correlations
+the paper reported turn out to be only slightly above normal. Style correlations have also been
+lower since 2018, which weighs on the newer events; comparing each event with its own era's
+baseline was not part of the preregistered test.
 
 ## Why this is hard
 
@@ -96,8 +119,8 @@ The repo also contains a research agent: Claude answering questions about the st
 - The VIX spike threshold (ratio >= 1.30 vs the prior 20-day median) is a modeling choice.
 - 24 grid combinations were tested, so exploratory results face multiple-testing risk.
 - Correlation spikes and VIX spikes can share a common cause; a lead is not causation.
-- This tests a short-horizon spike signal. The paper's three-month lead-up signal (high
-  equity-equity and negative gold-equity correlation levels) is not tested here.
+- The paper replication uses index mutual funds and gold futures as proxies for the paper's
+  Morningstar indexes, and a mechanical VIX-doubling rule to pick events.
 - Results are not a trading strategy and are not investment advice.
 
 ## Repository map
