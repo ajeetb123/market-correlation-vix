@@ -1,8 +1,8 @@
-# VIX Research Agent
+# Market Correlation vs. VIX
 
 Do spikes in cross-asset correlation lead spikes in the VIX? A preregistered test on
-2007 to 2026 market data, plus an LLM research agent that can only answer by calling
-the tested pipeline, measured by a 24-case eval harness.
+2007 to 2026 market data, built so that it is hard to fool yourself: the primary test
+was locked in before any results existed, and automated checks guard against lookahead bias.
 
 ## Background
 
@@ -41,42 +41,26 @@ flowchart LR
     D --> E[analysis: event study, permutation, regression, OOS, grid]
     T[targets.py<br/>only forward-looking module] --> E
     E --> R[report: figures, results.json, README]
-    E --> S[ResearchService<br/>memoized]
-    S --> TL[9 validated tools]
-    TL <--> L[agent loop]
-    L <--> M[Claude API]
-    L --> TR[runs/*.jsonl transcripts]
-    S --> RF[eval references]
-    L --> EV[eval runner]
-    RF --> EV
-    EV --> J[LLM judge<br/>calibrated]
-    EV --> SUM[evals/results/latest.md]
+    E -.-> S[optional research agent<br/>not run live]
 ```
 
 ## Quickstart
+
+Everything below is free: it uses public Yahoo Finance data and runs locally.
 
 ```bash
 git clone https://github.com/ajeetb123/market-correlation-vix.git
 cd market-correlation-vix
 python3.11 -m venv .venv && source .venv/bin/activate   # any Python 3.11+
 pip install -e ".[dev]"
-cp .env.example .env        # add your ANTHROPIC_API_KEY
+pytest -q                   # full test suite, no network needed
 vixagent pull               # download and cache data
 vixagent report             # figures + results
-vixagent chat --show-tools  # talk to the research agent
-vixagent eval               # run the eval suite
 ```
 
-## Example: the agent pushing back
+## Optional: research agent
 
-<!-- Abridged real transcript from runs/*.jsonl goes here (docs/steps/phase-5-polish.md, Step 5.3). -->
-
-## Eval results
-<!-- EVALS:START -->
-Evals not yet run.
-<!-- EVALS:END -->
-
-What the evals do and do not test: the evals measure whether the agent uses the pipeline faithfully (every number grounded in a tool output, correct values, the right tools called, and pushback on false premises, lookahead, and overfitting). They do not test whether the pipeline itself is correct, because the agent and the reference answers call the same analysis code; that is covered by the pytest suite (synthetic data with known answers, the hand-checkable event study, and the no-lookahead test).
+The repo also contains a research agent: Claude answering questions about the study only by calling the tested pipeline as tools, plus an eval harness (grounding, numeric, tool-use, and LLM-judge graders over a set of test questions) that checks it does not invent numbers and pushes back on flawed premises. It is fully built and unit-tested against a fake API client, but it has not been run live, because that requires a paid Anthropic API key. To try it, copy `.env.example` to `.env`, add a key, and run `vixagent chat --show-tools` or `vixagent eval`.
 
 ## Limitations
 
@@ -86,9 +70,6 @@ What the evals do and do not test: the evals measure whether the agent uses the 
 - 24 grid combinations were tested, so exploratory results face multiple-testing risk.
 - Correlation spikes and VIX spikes can share a common cause; a lead is not causation.
 - Results are not a trading strategy and are not investment advice.
-
-## What I learned
-<!-- Written by Ajeet. -->
 
 ## Repository map
 
@@ -101,11 +82,10 @@ src/vixagent/
   spikes.py        spike days and declustered events
   analysis/        event study, permutation test, regression, out-of-sample, grid
   report/          figures, results.json/.md, README injection
-  agent/           research service, tools, system prompt, tool-use loop, transcripts
-  evals/           case loader, references, graders, LLM judge, runner
+  agent/           optional research agent: service, tools, prompt, loop, transcripts
+  evals/           optional agent evals: cases, references, graders, judge, runner
   cli.py           vixagent pull | report | ask | chat | eval
-tests/             pytest suite (synthetic data, fake Anthropic client, no network)
-evals/             24 eval cases, judge calibration set, changelog, latest results
+tests/             pytest suite (synthetic data, fake API client, no network)
 reports/           generated figures and results (committed)
 docs/              spec, plan, step-by-step phase guides, walkthroughs
 ```
