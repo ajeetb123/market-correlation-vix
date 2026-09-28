@@ -2,7 +2,7 @@
 
 Goal: implement the event study, permutation test, regressions, out-of-sample test, and overfitting check; generate figures and results files; publish v0.1.
 
-Read first: `AGENTS.md`, `docs/SPEC.md` sections 8 and 9, and your Phase 1 walkthrough.
+Read first: `docs/SPEC.md` sections 8 and 9, and your Phase 1 walkthrough.
 
 Module map:
 ```
