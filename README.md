@@ -8,7 +8,9 @@ was locked in before any results existed, and automated checks guard against loo
 
 I tested whether assets moving together predicts market fear spikes, using a locked-in test
 and safeguards against lookahead bias. The answer was no: they happen at the same time, not
-one before the other.
+one before the other. When the data hinted at a different pattern, I locked that in as a new
+hypothesis and tested it on untouched data from 1999 to 2007. It didn't hold up, and I report
+that too.
 
 ## Background
 
